@@ -1,0 +1,31 @@
+#!/bin/sh
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+../../bin/Wan_Reset_Script.sh
+
+gre="test_gre${ppa_auto_name}"
+echo "Wan Side settings:"
+echo "ip link add $gre type gretap remote $cpe_wan_ip local $cpe_wan_gw ttl 255"
+cmd="ip link add $gre type gretap remote $cpe_wan_ip local $cpe_wan_gw ttl 255"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -r 0
+echo "ip link set $gre up"
+cmd="ip link set $gre up"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -r 0
+echo "ip -6 addr add $cpe_wan_gw_gre dev $gre"
+cmd="ip -6 addr add $cpe_wan_gw_gre dev $gre"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -r 0
+echo "ip -6 route add $lan_ip/128 dev $gre"
+cmd="ip -6 route add $lan_ip/128 dev $gre"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -r 0
+
+
+wan/wan_init

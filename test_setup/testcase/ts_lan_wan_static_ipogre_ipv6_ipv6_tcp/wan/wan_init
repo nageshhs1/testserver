@@ -1,0 +1,16 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+set_ipv6_mac_neigh_table_wanside "$fixed_wan_side_if" "$cpe_wan_ip" 
+get_ipv6_mac_address_wan "$fixed_wan_side_if"
+
+

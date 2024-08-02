@@ -1,0 +1,11 @@
+. /var/cpe_env_global
+. /var/ppa_auto_env
+. /var/cpe_env
+
+stop_br2684 0 
+#tftp -p -l /var/result_cpe $tmp_lan_ip_route_mode 
+#$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s /var/result_cpe  -d /var/result_cpe -g $ppa_auto_debug
+#$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s /var/result_tso_lro  -d /var/result_tso_lro -g $ppa_auto_debug
+
+killall iperf
+

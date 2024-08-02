@@ -1,0 +1,19 @@
+#!/bin/sh
+
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if 
+. /var/ppa_auto_env
+. /var/cpe_env
+
+if [ $cpe_nat_enable -gt 0 ]; then 
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if -j MASQUERADE
+fi
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal
+echo 0 > /sys/devices/virtual/net/br0/bridge/multicast_snooping
+
+set_default_gw "$cpe_wan_gw"
+
+

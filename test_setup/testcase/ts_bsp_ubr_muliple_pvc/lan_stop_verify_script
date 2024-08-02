@@ -1,0 +1,19 @@
+#!/bin/sh 
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+vconfig rem $ppa_auto_if_cpe.$lan_vlan1_multi
+vconfig rem $ppa_auto_if_cpe.$lan_vlan2_multi
+vconfig rem $ppa_auto_if_cpe.$lan_vlan3_multi
+vconfig rem $ppa_auto_if_cpe.$lan_vlan4_multi
+vconfig rem $ppa_auto_if_cpe.$lan_vlan5_multi
+vconfig rem $ppa_auto_if_cpe.$lan_vlan6_multi
+vconfig rem $ppa_auto_if_cpe.$lan_vlan7_multi
+vconfig rem $ppa_auto_if_cpe.$lan_vlan8_multi
+

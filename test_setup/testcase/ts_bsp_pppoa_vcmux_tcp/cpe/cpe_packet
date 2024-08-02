@@ -1,0 +1,36 @@
+#!/bin/sh
+
+. /var/cpe_env_global
+#br0: $cpe_lan_if nas0
+. /var/ppa_auto_env
+. /var/cpe_env
+
+if [ $cpe_nat_enable -gt 0 ]; then 
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if -j MASQUERADE
+fi
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal  
+
+#route add default gw $cpe_wan_gw dev $cpe_wan_if
+
+[ -c /dev/ifx_ppa ] || mknod  /dev/ifx_ppa c 181 0
+
+#echo "set_ipv4_address "$cpe_wan_if" "$cpe_wan_ip""
+#set_ip_address "$cpe_wan_if" "$cpe_wan_ip"
+#set_default_gw "$cpe_wan_gw"
+#[ -c /dev/ifx_ppa ] || mknod  /dev/ifx_ppa c 181 0
+
+# Ensure default interface to WAN PC
+ip route ls > /dev/console
+
+#ppacmd init
+#ppacmd control --enable-lan --enable-wan
+
+#ppacmd addlan -i $cpe_lan_if
+
+#ppacmd addlan -i br0
+
+#ppacmd addwan -i $cpe_wan_if
+
+#$ppacmd_path addmc -g $multicast_ip -l $cpe_lan_if 

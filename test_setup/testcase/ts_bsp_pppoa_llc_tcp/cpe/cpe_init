@@ -1,0 +1,44 @@
+#!/bin/sh
+
+. /var/cpe_env_global
+#NAT mode with single wan interface and lan interface, both without any vlan
+#br0: $cpe_lan_if
+#br0 <--> NAT <--> $phy_if_name0
+#
+. /var/ppa_auto_env
+. /var/cpe_env
+
+#init dsl_atm if necessary
+start_dsl_atm
+
+start_firewall_flush
+
+#Below PPP options to avoid compression error:"ppp: compressor dropped pkt"
+#echo "nodeflate" >> /etc/ppp/options
+#echo "nobsdcomp" >> /etc/ppp/options
+
+#Overwrite global variable for wan base interface for PPPoA...
+phy_wan_ifname0="ppp"
+
+#br2684ctl -k "0.$pvc"
+#stop_br2684 0
+#ppa_sleep  1
+
+#Start Bridge command using below parameters
+#$1: 0 - Routed, 1 - Bridged (Default)
+#$2: nas index
+#$3: 0 - LLC/SNAP (Default), 1 - VCMux
+#$4: queue type :- ATM_QOS="UBR,aal5:"
+#$5: pvc:- 0.33
+#start_br2684 0 $nas_index 0 "UBR,aal5:" "0.$pvc"
+set_br_mac_up br0 1
+set_ip_address "br0" $cpe_lan_ip
+
+ppa_sleep  1
+start_pppoa $pvc $pppoa_mode
+sleep 5
+ppa_sleep  1
+echo "set_ipv4_address "$cpe_wan_if" "$cpe_wan_ip""
+set_ip_address "$cpe_wan_if" "$cpe_wan_ip"
+set_default_gw "$cpe_wan_gw"
+[ -c /dev/ifx_ppa ] || mknod  /dev/ifx_ppa c 181 0

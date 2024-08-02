@@ -1,0 +1,29 @@
+plugin /pppoatm.so
+
+plugin /rp-pppoe.so
+
+user test
+
+password test
+
+lcp-echo-interval 10
+
+lcp-echo-failure 3
+
+maxfail 0
+
+updetach
+
+debug
+
+defaultroute
+
+usepeerdns
+
+persist
+
+holdoff 4
+
+llc-encaps
+
+qos UBR,aal5:max_pcr=0,min_pcr=0 

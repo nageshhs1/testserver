@@ -1,0 +1,15 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+
+start_tcp_client "$cpe_wan_gw_gre" "$PACKET_GEN_PORT_IPV6" "$packet_session_num_udp" "$packet_session_num_tcp" "$ppa_auto_packet_id_file" "$ppa_auto_packet_result_file" 
+

@@ -1,0 +1,19 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+
+
+ppa_echo "set_tunnel_6rd_wan "$Tunnel_Dev_6rd_Name" "$cpe_wan_gw_ipv4" "$cpe_wan_ip_ipv4" "$cpe_wan_gw_6rd_ipv6" "$ipv6_subnetmask""
+# param 4 and 5 are 6rd dev ipv6 address/subnet
+set_tunnel_6rd_wan "$Tunnel_Dev_6rd_Name" "$cpe_wan_gw_ipv4" "$cpe_wan_ip_ipv4" "$cpe_wan_gw_6rd_ipv6" "$ipv6_subnetmask"
+
+set_routeing_table_wanside "$lan_ip" "$cpe_wan_ip_6rd_ipv6" "128" "$Tunnel_Dev_6rd_Name" 

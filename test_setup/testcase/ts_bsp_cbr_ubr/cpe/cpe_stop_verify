@@ -1,0 +1,17 @@
+. /var/cpe_env_global
+. /var/ppa_auto_env
+. /var/cpe_env
+
+stop_br2684 0
+#remove sub interfaces on WAN
+vconfig rem $cpe_wan_if0
+vconfig rem $cpe_wan_if1
+# Remove lan_sub interface
+vconfig rem $cpe_lan_if2
+#remove bridge 
+ifconfig br1 down
+brctl delbr br1
+#Remove all NAS interfaces
+ppacmd addwan -i $cpe_wan_base_if0
+ppacmd addwan -i $cpe_wan_base_if1
+

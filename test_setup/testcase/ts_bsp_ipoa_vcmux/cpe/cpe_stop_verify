@@ -1,0 +1,11 @@
+. /var/cpe_env_global
+. /var/ppa_auto_env
+. /var/cpe_env
+
+stop_br2684 0
+ppacmd delwan nas0
+ifconfig nas0 down
+sleep 1
+br2684ctl -k 0
+sleep 2
+ 

@@ -1,0 +1,16 @@
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+path=co_get_result.expect
+echo "TELNET:: to CO:$CO_IP start"
+echo "expect 1:$path 2:$CO_IP 3:$CO_MODE 4:$CO_ENCAP 5:$CO_PORT 6:$CO_VPI 7:$CO_VCI 8:$tmp_folder"
+sudo expect $path $CO_IP $CO_PORT $CO_VPI $CO_VCI $ppa_auto_testcase_log_folder
+#sudo cp $ppa_auto_testcase_log_folder/co_telnet_log $ppa_auto_packet_result_file
+echo "TELNET:: to CO:$CO_IP complete"
+

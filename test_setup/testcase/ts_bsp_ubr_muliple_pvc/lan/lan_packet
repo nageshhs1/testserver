@@ -1,0 +1,33 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+sec=20
+iperf -c "$cpe_wan_gw1" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result1 &
+iperf -c "$cpe_wan_gw2" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result2 &
+iperf -c "$cpe_wan_gw3" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result3 &
+iperf -c "$cpe_wan_gw4" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result4 &
+iperf -c "$cpe_wan_gw5" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result5 &
+iperf -c "$cpe_wan_gw6" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result6 &
+iperf -c "$cpe_wan_gw7" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result7 &
+#iperf -c "$cpe_wan_gw8" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result8
+#iperf -c "$cpe_wan_gw9" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result9
+#cat $ppa_auto_testcase_log_folder/result | grep sec | head -$sec | tail -1 | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file
+sleep 50
+cat $ppa_auto_testcase_log_folder/result1 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file1
+cat $ppa_auto_testcase_log_folder/result2 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file2
+cat $ppa_auto_testcase_log_folder/result3 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file3
+cat $ppa_auto_testcase_log_folder/result4 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file4
+cat $ppa_auto_testcase_log_folder/result5 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file5
+cat $ppa_auto_testcase_log_folder/result6 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file6
+cat $ppa_auto_testcase_log_folder/result7 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file7
+#cat $ppa_auto_testcase_log_folder/result8 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file8
+#cat $ppa_auto_testcase_log_folder/result9 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file9

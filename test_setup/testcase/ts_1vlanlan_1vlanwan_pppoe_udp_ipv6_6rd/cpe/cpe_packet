@@ -1,0 +1,22 @@
+#!/bin/sh 
+
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if $phy_wan_ifname0
+. /var/ppa_auto_env
+. /var/cpe_env
+
+
+if [ $cpe_nat_enable -gt 0 ]; then 
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if -j MASQUERADE
+fi
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal  
+
+
+set_6rd_tunnel_cpe_side_for_ppp
+echo "set_ipv6_address "$Tunnel_Dev_6rd_Name" "$cpe_wan_ip_6rd_ipv6" "$ipv6_subnetmask""
+set_ip_address "$Tunnel_Dev_6rd_Name" "$cpe_wan_ip_6rd_ipv6" "$ipv6_subnetmask"
+

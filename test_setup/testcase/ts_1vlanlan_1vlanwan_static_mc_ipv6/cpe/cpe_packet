@@ -1,0 +1,23 @@
+#!/bin/sh 
+
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if 
+. /var/ppa_auto_env
+. /var/cpe_env
+. /var/Wan_Mac_Address_File
+
+if [ $cpe_nat_enable -gt 0 ]; then 
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if -j MASQUERADE
+fi
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal
+echo 0 > /sys/devices/virtual/net/br0/bridge/multicast_snooping
+
+
+ppa_echo "set_ipv6_mac_neigh_table_cpeside "$phy_wan_ifname0" "$cpe_wan_gw" "$mac_address""
+set_ipv6_mac_neigh_table_cpeside "$phy_wan_ifname0" "$cpe_wan_gw" "$mac_address"
+
+

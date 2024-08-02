@@ -1,0 +1,2665 @@
+#!/bin/sh 
+
+#load
+setup_file_path=`pwd`
+setup_file="$setup_file_path/cfg/ppa_auto_env_setup"
+if [ -f $setup_file ];then
+. $setup_file
+fi
+
+#BSP-Used to access web-gui
+cpe_login="admin";	export cpe_login
+cpe_passwd="admin";	export cpe_passwd
+
+
+#load 
+#File ppa_auto_env: 
+#It defines all enviroment which will be used by LAN/WAN PC and CPE.
+
+#Below ENV parameter may be changed in order to support multiple ppa automation test simultanesouly----Begin
+#below value depends on which port in DSL CO. different port use different IP
+wan_ip_routed_mode="192.168.0.105"; export wan_ip_routed_mode
+
+#Temp folder used in wan server
+wan_log_folder=/tmp/;   export wan_log_folder
+#Network interface used in wan server for packet patter/match 
+wan_server_if="eth1";   export wan_server_if
+#command path in wan server
+
+#----------------------------------------------------------------------End
+
+#Below env define some debug variable ------------------------------------------------------------------Begin
+##ppa_auto_debug for ppa-auto_tool or ppa_auto_match
+ppa_auto_debug=none;      export ppa_auto_debug
+
+#enable_mib_debug for debug mibs apis
+enable_mib_debug=1;       export enable_mib_debug
+
+#enable_ips_debug for debug the ip api for lan/cpe/wan
+enable_ips_debug=0;       export enable_ips_debug
+
+#ppa_automation pattern/packet match debug value
+ppa_auto_pattern_debug=none
+#------------------------------------------Debug variable --------------End
+
+#command path definiion---------------------------------------------------------------------------------Begin
+#note, down_path don't use two lelve folder 
+down_path="/tmp";                   export down_path
+tmp_cpe_path="/var/";               export tmp_cpe_path
+ppacmd_path=$down_path/ppacmd;      export ppa_cmd_path
+ebtables_path=$down_path/ebtables;  export ebtables_path
+iptables_path=$down_path/iptables;  export iptables_path
+br2684_path=br2684ctl;              export br2684_path
+vconfig_path=vconfig;               export vconfig_path
+ppp_lib_path=$down_path/;           export ppp_lib_path
+pppd_path=$down_path/pppd;          export pppd_path
+pppoecd_path=$down_path/pppoecd;    export pppoecd_path         
+directpath_module_simple=ifx_loop_eth_dev.ko
+directpath_module=$down_path/$directpath_module_simple; export directpath_module
+ppp_option=$down_path/ppp_option;   export ppp_option
+ip_path=$down_path/ip;  export ip_path 
+server2_bin_path=/ppa_server2_cfg; export server2_bin_path #Server_2 bin folder path
+#-----------------------------------------------------------------------End
+
+#IPV6 lan/wan part IPs
+ipv6_lan_part_address="2001:";  		export ipv6_lan_part_address
+ipv6_wan_part_address="2000:";  		export ipv6_wan_part_address
+ipv6_wan_part_address_6rd="2002:";     		export ipv6_wan_part_address_6rd
+ipv6_wan_part_address_dslite="2003:";      	export ipv6_wan_part_address_dslite
+
+#lan IPs
+#define lan basic subnet, mainly for NAT mode
+lan_subnet_basic="192.168.168.0";     export lan_subnet_basic
+lan_subnet_basic_mask="255.255.255.0";export lan_subnet_basic_mask
+
+lan_subnet_basic_ipv6_part_address="${ipv6_lan_part_address}:c0a8:a8:";  			export lan_subnet_basic_ipv6_part_address
+lan_subnet_basic_ipv6_vlan1_part_address="${ipv6_lan_part_address}:c0a8:a8:";  			export lan_subnet_basic_ipv6_vlan1_part_address
+lan_subnet_basic_ipv6_vlan2_part_address="${ipv6_lan_part_address}:c0a8:a8:";  			export lan_subnet_basic_ipv6_vlan2_part_address
+
+lan_vlan1="2";                       export lan_vlan1
+lan_subnet_vlan1="192.168.168.0";     export lan_subnet_vlan1
+lan_subnet_vlan1_mask="255.255.255.0";	export lan_subnet_vlan1_mask
+
+# Define LAN vlans for multip pvc mode
+lan_vlan1_multi="2";			export lan_vlan1_multi
+lan_subnet_vlan1_multi="192.168.168.0"; 	export lan_subnet_vlan1_multi
+lan_subnet_vlan1_mask_multi="255.255.255.0";	export lan_subnet_vlan1_mask_multi
+
+lan_vlan2_multi="3";                    export lan_vlan2_multi
+lan_subnet_vlan2_multi="192.168.169.0";         export lan_subnet_vlan2_multi
+lan_subnet_vlan2_mask_multi="255.255.255.0";     export lan_subnet_vlan2_mask_multi
+
+lan_vlan3_multi="4";                    export lan_vlan3_multi
+lan_subnet_vlan3_multi="192.168.170.0";         export lan_subnet_vlan3_multi
+lan_subnet_vlan3_mask_multi="255.255.255.0";     export lan_subnet_vlan3_mask_multi
+
+lan_vlan4_multi="5";                    export lan_vlan4_multi
+lan_subnet_vlan4_multi="192.168.171.0";         export lan_subnet_vlan4_multi
+lan_subnet_vlan4_mask_multi="255.255.255.0";     export lan_subnet_vlan4_mask_multi
+
+######################################################
+lan_vlan5_multi="6";                    export lan_vlan5_multi
+lan_subnet_vlan5_multi="192.168.172.0";         export lan_subnet_vlan5_multi
+lan_subnet_vlan5_mask_multi="255.255.255.0";     export lan_subnet_vlan5_mask_multi
+
+lan_vlan6_multi="7";                    export lan_vlan6_multi
+lan_subnet_vlan6_multi="192.168.173.0";         export lan_subnet_vlan6_multi
+lan_subnet_vlan6_mask_multi="255.255.255.0";     export lan_subnet_vlan6_mask_multi
+
+lan_vlan7_multi="8";                    export lan_vlan7_multi
+lan_subnet_vlan7_multi="192.168.174.0";         export lan_subnet_vlan7_multi
+lan_subnet_vlan7_mask_multi="255.255.255.0";     export lan_subnet_vlan7_mask_multi
+
+lan_vlan8_multi="9";                    export lan_vlan8_multi
+lan_subnet_vlan8_multi="192.168.175.0";         export lan_subnet_vlan8_multi
+lan_subnet_vlan8_mask_multi="255.255.255.0";     export lan_subnet_vlan8_mask_multi
+
+lan_vlan9_multi="10";                    export lan_vlan9_multi
+lan_subnet_vlan9_multi="192.168.176.0";         export lan_subnet_vlan9_multi
+lan_subnet_vlan9_mask_multi="255.255.255.0";     export lan_subnet_vlan9_mask_multi
+
+lan_vlan10_multi="11";                    export lan_vlan10_multi
+lan_subnet_vlan10_multi="192.168.177.0";         export lan_subnet_vlan10_multi
+lan_subnet_vlan10_mask_multi="255.255.255.0";     export lan_subnet_vlan10_mask_multi
+
+####################################################
+
+lan_subnet_loopeth="10.10.10.0";        export lan_subnet_loopeth
+lan_subnet_loopeth_mask="255.255.255.0";export lan_subnet_loopeth_mask
+loopeth_basename="loopeth";             export loopeth_basename
+loopeth0_unit=0;                        export loopeth0_unit
+loopeth1_unit=1;                        export loopeth1_unit
+loopeth2_unit=2;                        export loopeth2_unit
+loopeth3_unit=3;                        export loopeth3_unit
+
+wan_subnet_loopeth="11.11.11.0";        export wan_subnet_loopeth
+wan_subnet_loopeth_mask="255.255.255.0";export wan_subnet_loopeth_mask
+wan_subnet_loopeth_mc="239.1.1.1";      export wan_subnet_loopeth_mc
+
+atm_interface_name="nas"                export atm_interface_name
+#Note, pvc and nas index mapping
+# pvc    nas-index
+#0.33    0
+#0.34    1
+#0.35    2
+#0.36    3
+#0.37    4
+#0.38    5
+#0.39    6
+#0.40    7
+#S1: pvc number, like 0.33 and so on
+atm_wan_name="nas";        export atm_wan_name
+get_nas_index()
+{  #$1: pvc value, like 0.33, 0,35
+
+   #note, don't echo debug information in this API since its output will be used as return value
+   index=0;
+   pvc=$1;
+   if [ "$pvc" == "0.33" ]; then
+     index=0;
+   elif [ "$pvc" == "0.34" ]; then
+     index=1;
+   elif [ "$pvc" == "0.35" ]; then
+     index=2;
+   elif [ "$pvc" == "0.36" ]; then
+     index=3;
+   elif [ "$pvc" == "0.37" ]; then
+     index=4;
+   elif [ "$pvc" == "0.38" ]; then
+     index=5;
+   elif [ "$pvc" == "0.39" ]; then
+     index=6;
+   elif [ "$pvc" == "0.40" ]; then
+     index=7;
+   elif [ "$pvc" == "0.41" ]; then
+     index=8;
+   else
+     index=9;
+   fi
+   
+   #note, don't remove this echo or change to ppp_echo since this return value will be used by the caller
+   echo $index;
+}
+
+#for ATM wan mode, this nas interface is nasxx. But we don't know what's the detail nas index, like 0,1,,2 
+#although most time is is nas0
+#here we will check the phy_wan_ifname0 to nas followed by its real nas_index value, like nas2, nas3 and so on
+rework_wan_ifname()
+{ #$1: the current physical wan interface name, like nas0, eth1, ptm0,...
+  #S2: current nas_index, like 0, 1, 2, 3 ,...
+  local curr_wan_ifname=$1;
+  local nas_index=$2;
+  
+  #if the curr_wan_ifname is nasxxx, then it will be changed to nas followed by its nas_index, ie, the value will be nas0, nas1,...
+  [[ "$(echo ${curr_wan_ifname} | grep "$atm_wan_name")" != "" ]] && curr_wan_ifname=${atm_wan_name}${nas_index} 
+  
+  #note, don't remove this echo or change to ppp_echo since this return value will be used by the caller
+  echo $curr_wan_ifname
+} 
+
+#server IPs
+#define basic wan subnet without any vlan tag or with pppoe
+wan_subnet_basic="192.168.0.0";       export wan_subnet_basic
+wan_subnet_basic_mask="255.255.255.0";export wan_subnet_basic_mask
+wan_subnet_basic_mc_num=4;            export wan_subnet_basic_mc_num
+
+#l2tp server ip address (fixed)
+l2tp_server_subnet_basic="192.168.77.0" export l2tp_server_subnet_basic
+l2tp_server_subnet_basic_mask="255.255.255.0" export l2tp_server_subnet_basic_mask
+l2tp_server_ip="192.168.77.77" export l2tp_server_ip
+
+#GRE
+#gre_wan_subnet_ipv4_basic="10.0.1.0";       export gre_wan_subnet_ipv4_basic
+#gre_wan_subnet_ipv4_basic_mask="255.255.255.0";export gre_wan_subnet_ipv4_basic_mask
+
+gre_wan_subnet_ipv6_basic="2005:";       export gre_wan_subnet_ipv6_basic
+gre_wan_subnet_ipv6_basic_mask="15";export gre_wan_subnet_ipv6_basic_mask
+
+
+#IPV4 multicast Range
+wan_subnet_basic_mc="239.1.1.1";      export wan_subnet_basic_mc
+wan_subnet_basic_mc_end="239.1.1.50";  export wan_subnet_basic_mc_end
+#IPV6 multicast Range
+wan_subnet_basic_mc_ipv6="ff28::1";      export wan_subnet_basic_mc_ipv6
+wan_subnet_basic_mc_end_ipv6="ff28::ffff";  export wan_subnet_basic_mc_end_ipv6
+
+wan_subnet_pppoe_mc_num=2;            export wan_subnet_pppoe_mc_num
+#IPV4 multicast DST Range
+wan_subnet_pppoe_mc="239.1.1.5";      export wan_subnet_pppoe_mc
+wan_subnet_pppoe_mc_end="239.1.1.6";  export wan_subnet_pppoe_mc_end
+#IPV6 multicast DST Range
+wan_subnet_pppoe_mc_ipv6="ff28::5";      export wan_subnet_pppoe_mc_ipv6
+wan_subnet_pppoe_mc_end_ipv6="ff28::6";  export wan_subnet_pppoe_mc_end_ipv6
+
+#define vlan 4's wan subnet
+wan_subnet_vlan4="192.168.4.0";       export wan_subnet_vlan4
+wan_subnet_vlan4_mask="255.255.255.0";export wan_subnet_vlan4_mask
+wan_subnet_vlan4_mc_num=5;            export wan_subnet_vlan4_mc_num
+#IPV4 multicast DST Range
+wan_subnet_vlan4_mc="239.2.1.1";      export wan_subnet_vlan4_mc
+wan_subnet_vlan4_mc_end="239.2.1.4";  export wan_subnet_vlan4_mc_end
+#IPV6 multicast DST Range
+wan_subnet_vlan4_mc_ipv6="ff28::4:1";      export wan_subnet_vlan4_mc_ipv6
+wan_subnet_vlan4_mc_end_ipv6="ff28::4:ffff";  export wan_subnet_vlan4_mc_end_ipv6
+
+wan_vlan4_id=4;                       export wan_vlan4_id
+wan_full_vlan4_id=0x81000004;         export wan_full_vlan4_id
+
+#define vlan 5's wan subnet
+wan_subnet_vlan5="192.168.5.0";       export wan_subnet_vlan5
+wan_subnet_vlan5_mask="255.255.255.0";export wan_subnet_vlan5_mask
+wan_subnet_vlan5_mc_num=6;            export wan_subnet_vlan5_mc_num
+#IPV4 multicast DST Range
+wan_subnet_vlan5_mc="239.2.1.1";      export wan_subnet_vlan5_mc
+wan_subnet_vlan5_mc_end="239.2.1.4";  export wan_subnet_vlan5_mc_end
+#IPV6 multicast DST Range
+wan_subnet_vlan5_mc_ipv6="ff28::5:1";      export wan_subnet_vlan5_mc_ipv6
+wan_subnet_vlan5_mc_end_ipv6="ff28::5:ffff";  export wan_subnet_vlan5_mc_end_ipv6
+
+wan_vlan5_id=5;                       export wan_vlan5_id
+wan_full_vlan5_id=0x81000005;         export wan_full_vlan5_id
+
+#define vlan 6's wan subnet
+wan_subnet_vlan6="192.168.6.0";       export wan_subnet_vlan6
+wan_subnet_vlan6_mask="255.255.255.0";export wan_subnet_vlan6_mask
+wan_subnet_vlan6_mc_num=7;            export wan_subnet_vlan6_mc_num
+#IPV4 multicast DST Range
+wan_subnet_vlan6_mc="239.2.1.1";      export wan_subnet_vlan6_mc
+wan_subnet_vlan6_mc_end="239.2.1.4";  export wan_subnet_vlan6_mc_end
+#IPV6 multicast DST Range
+wan_subnet_vlan6_mc_ipv6="ff28::6:1";      export wan_subnet_vlan6_mc_ipv6
+wan_subnet_vlan6_mc_end_ipv6="ff28::6:ffff";  export wan_subnet_vlan6_mc_end_ipv6
+
+wan_vlan6_id=6;                       export wan_vlan6_id
+wan_full_vlan6_id=0x81000006;         export wan_full_vlan6_id
+
+#define vlan 7's wan subnet
+wan_subnet_vlan7="192.168.7.0";       export wan_subnet_vlan7
+wan_subnet_vlan7_mask="255.255.255.0";export wan_subnet_vlan7_mask
+wan_subnet_vlan7_mc_num=8;            export wan_subnet_vlan7_mc_num
+#IPV4 multicast DST Range
+wan_subnet_vlan7_mc="239.2.1.1";      export wan_subnet_vlan7_mc
+wan_subnet_vlan7_mc_end="239.2.1.4";  export wan_subnet_vlan7_mc_end
+#IPV6 multicast DST Range
+wan_subnet_vlan7_mc_ipv6="ff28::7:1";      export wan_subnet_vlan7_mc_ipv6
+wan_subnet_vlan7_mc_end_ipv6="ff28::7:ffff";  export wan_subnet_vlan7_mc_end_ipv6
+
+wan_vlan7_id=7;                       export wan_vlan7_id
+wan_full_vlan7_id=0x81000007;         export wan_full_vlan7_id
+
+#define vlan 8's wan subnet
+wan_subnet_vlan8="192.168.8.0";       export wan_subnet_vlan8
+wan_subnet_vlan8_mask="255.255.255.0";export wan_subnet_vlan8_mask
+wan_subnet_vlan8_mc_num=9;            export wan_subnet_vlan8_mc_num
+#IPV4 multicast DST Range
+wan_subnet_vlan8_mc="239.2.1.1";      export wan_subnet_vlan8_mc
+wan_subnet_vlan8_mc_end="239.2.1.4";  export wan_subnet_vlan8_mc_end
+#IPV6 multicast DST Range
+wan_subnet_vlan8_mc_ipv6="ff28::8:1";      export wan_subnet_vlan8_mc_ipv6
+wan_subnet_vlan8_mc_end_ipv6="ff28::8:ffff";  export wan_subnet_vlan8_mc_end_ipv6
+
+wan_vlan8_id=8;                       export wan_vlan8_id
+wan_full_vlan8_id=0x81000008;         export wan_full_vlan8_id
+
+#define vlan 9's wan subnet
+wan_subnet_vlan9="192.168.9.0";       export wan_subnet_vlan9
+wan_subnet_vlan9_mask="255.255.255.0";export wan_subnet_vlan9_mask
+wan_subnet_vlan9_mc_num=10;            export wan_subnet_vlan9_mc_num
+#IPV4 multicast DST Range
+wan_subnet_vlan9_mc="239.2.1.1";      export wan_subnet_vlan9_mc
+wan_subnet_vlan9_mc_end="239.2.1.4";  export wan_subnet_vlan9_mc_end
+#IPV6 multicast DST Range
+wan_subnet_vlan9_mc_ipv6="ff28::9:1";      export wan_subnet_vlan9_mc_ipv6
+wan_subnet_vlan9_mc_end_ipv6="ff28::9:ffff";  export wan_subnet_vlan9_mc_end_ipv6
+
+wan_vlan9_id=9;                       export wan_vlan9_id
+wan_full_vlan9_id=0x81000009;         export wan_full_vlan9_id
+
+#define vlan 10's wan subnet
+wan_subnet_vlan10="192.168.10.0";       export wan_subnet_vlan10
+wan_subnet_vlan10_mask="255.255.255.0";export wan_subnet_vlan10_mask
+wan_subnet_vlan10_mc_num=11;            export wan_subnet_vlan10_mc_num
+#IPV4 multicast DST Range
+wan_subnet_vlan10_mc="239.2.1.1";      export wan_subnet_vlan10_mc
+wan_subnet_vlan10_mc_end="239.2.1.4";  export wan_subnet_vlan10_mc_end
+#IPV6 multicast DST Range
+wan_subnet_vlan10_mc_ipv6="ff28::10:1";      export wan_subnet_vlan10_mc_ipv6
+wan_subnet_vlan10_mc_end_ipv6="ff28::10:ffff";  export wan_subnet_vlan10_mc_end_ipv6
+
+wan_vlan10_id=10;                       export wan_vlan10_id
+wan_full_vlan10_id=0x8100000a;         export wan_full_vlan10_id
+
+
+
+#define vlan 3's wan subnet
+wan_subnet_vlan3="192.168.3.0";       export wan_subnet_vlan3
+wan_subnet_vlan3_mask="255.255.255.0";export wan_subnet_vlan3_mask
+
+wan_subnet_vlan3_mc_num=4;            export wan_subnet_vlan3_mc_num
+
+#IPV4 multicast DST Range
+wan_subnet_vlan3_mc="239.2.1.1";      export wan_subnet_vlan3_mc
+wan_subnet_vlan3_mc_end="239.2.1.4";  export wan_subnet_vlan3_mc_end
+#IPV6 multicast DST Range
+wan_subnet_vlan3_mc_ipv6="ff28::3:1";      export wan_subnet_vlan3_mc_ipv6
+wan_subnet_vlan3_mc_end_ipv6="ff28::3:ffff";  export wan_subnet_vlan3_mc_end_ipv6
+
+wan_vlan3_id=3;                       export wan_vlan3_id
+wan_full_vlan3_id=0x81000003;         export wan_full_vlan3_id
+
+#define vlan 2's wan subnet
+wan_subnet_vlan2="192.168.2.0";       export wan_subnet_vlan2
+wan_subnet_vlan2_mask="255.255.255.0";export wan_subnet_vlan2_mask
+
+wan_subnet_vlan2_mc_num=4;            export wan_subnet_vlan2_mc_num
+#IPV4 multicast Range
+wan_subnet_vlan2_mc="239.2.1.1";      export wan_subnet_vlan2_mc
+wan_subnet_vlan2_mc_end="239.2.1.4";  export wan_subnet_vlan2_mc_end
+#IPV6 multicast DST Range
+wan_subnet_vlan2_mc_ipv6="ff28::2:1";      export wan_subnet_vlan2_mc_ipv6
+wan_subnet_vlan2_mc_end_ipv6="ff28::2:ffff";  export wan_subnet_vlan2_mc_end_ipv6
+
+wan_vlan2_id=2;                       export wan_vlan2_id
+wan_full_vlan2_id=0x81000002;         export wan_full_vlan2_id
+
+#IPV6 multicast source Range
+wan_subnet_vlan2_mc_ipv6_src="2000::1";      export wan_subnet_vlan2_mc_ipv6_src
+wan_subnet_vlan2_mc_end_ipv6_src="2000::ffff:ffff:ffff";  export wan_subnet_vlan2_mc_end_ipv6_src
+
+#Vlan Testcase CURRENT USE PVC/VLAN
+wan_subnet_llc_br_vlan1=$wan_subnet_vlan2               	export wan_subnet_llc_br_vlan1
+wan_subnet_llc_br_vlan1_mask=$wan_subnet_vlan2_mask   		export wan_subnet_llc_br_vlan1_mask
+
+wan_subnet_llc_br_vlan1_mc_num=$wan_subnet_vlan2_mc_num         export wan_subnet_llc_br_vlan1_mc_num
+
+#Define Vlan for multi pvc test
+wan_subnet_llc_br_vlan1_multi=$wan_subnet_vlan2		export wan_subnet_llc_br_vlan1_multi
+wan_subnet_llc_br_vlan1_mask_multi=$wan_subnet_vlan2_mask             export wan_subnet_llc_br_vlan1_mask_multi
+wan_subnet_llc_br_vlan1_mc_num_multi=$wan_subnet_vlan2_mc_num         export wan_subnet_llc_br_vlan1_mc_num_multi
+
+wan_subnet_llc_br_vlan2_multi=$wan_subnet_vlan3         export wan_subnet_llc_br_vlan2_multi
+wan_subnet_llc_br_vlan2_mask_multi=$wan_subnet_vlan3_mask             export wan_subnet_llc_br_vlan2_mask_multi
+wan_subnet_llc_br_vlan2_mc_num_multi=$wan_subnet_vlan3_mc_num         export wan_subnet_llc_br_vlan2_mc_num_multi
+
+wan_subnet_llc_br_vlan3_multi=$wan_subnet_vlan4         export wan_subnet_llc_br_vlan3_multi
+wan_subnet_llc_br_vlan3_mask_multi=$wan_subnet_vlan4_mask             export wan_subnet_llc_br_vlan3_mask_multi
+wan_subnet_llc_br_vlan3_mc_num_multi=$wan_subnet_vlan4_mc_num         export wan_subnet_llc_br_vlan3_mc_num_multi
+
+wan_subnet_llc_br_vlan4_multi=$wan_subnet_vlan5         export wan_subnet_llc_br_vlan4_multi
+wan_subnet_llc_br_vlan4_mask_multi=$wan_subnet_vlan5_mask             export wan_subnet_llc_br_vlan4_mask_multi
+wan_subnet_llc_br_vlan4_mc_num_multi=$wan_subnet_vlan5_mc_num         export wan_subnet_llc_br_vlan4_mc_num_multi
+
+wan_subnet_llc_br_vlan5_multi=$wan_subnet_vlan6         export wan_subnet_llc_br_vlan5_multi
+wan_subnet_llc_br_vlan5_mask_multi=$wan_subnet_vlan6_mask             export wan_subnet_llc_br_vlan5_mask_multi
+wan_subnet_llc_br_vlan5_mc_num_multi=$wan_subnet_vlan6_mc_num         export wan_subnet_llc_br_vlan5_mc_num_multi
+
+wan_subnet_llc_br_vlan6_multi=$wan_subnet_vlan7         export wan_subnet_llc_br_vlan6_multi
+wan_subnet_llc_br_vlan6_mask_multi=$wan_subnet_vlan7_mask             export wan_subnet_llc_br_vlan6_mask_multi
+wan_subnet_llc_br_vlan6_mc_num_multi=$wan_subnet_vlan7_mc_num         export wan_subnet_llc_br_vlan6_mc_num_multi
+
+wan_subnet_llc_br_vlan7_multi=$wan_subnet_vlan8         export wan_subnet_llc_br_vlan7_multi
+wan_subnet_llc_br_vlan7_mask_multi=$wan_subnet_vlan8_mask             export wan_subnet_llc_br_vlan7_mask_multi
+wan_subnet_llc_br_vlan7_mc_num_multi=$wan_subnet_vlan8_mc_num         export wan_subnet_llc_br_vlan7_mc_num_multi
+
+wan_subnet_llc_br_vlan8_multi=$wan_subnet_vlan9         export wan_subnet_llc_br_vlan8_multi
+wan_subnet_llc_br_vlan8_mask_multi=$wan_subnet_vlan9_mask             export wan_subnet_llc_br_vlan8_mask_multi
+wan_subnet_llc_br_vlan8_mc_num_multi=$wan_subnet_vlan9_mc_num         export wan_subnet_llc_br_vlan8_mc_num_multi
+
+wan_subnet_llc_br_vlan9_multi=$wan_subnet_vlan10         export wan_subnet_llc_br_vlan9_multi
+wan_subnet_llc_br_vlan9_mask_multi=$wan_subnet_vlan10_mask             export wan_subnet_llc_br_vlan9_mask_multi
+wan_subnet_llc_br_vlan9_mc_num_multi=$wan_subnet_vlan10_mc_num         export wan_subnet_llc_br_vlan9_mc_num_multi
+
+
+
+#IPV4 multicast DST Range
+wan_subnet_llc_br_vlan1_mc=$wan_subnet_vlan2_mc         	export wan_subnet_llc_br_vlan1_mc
+wan_subnet_llc_br_vlan1_mc_end=$wan_subnet_vlan2_mc_end        	export wan_subnet_llc_br_vlan1_end
+#IPV6 multicast DST Range
+wan_subnet_llc_br_vlan1_mc_ipv6=$wan_subnet_vlan2_mc_ipv6         	export wan_subnet_llc_br_vlan1_mc_ipv6
+wan_subnet_llc_br_vlan1_mc_end_ipv6=$wan_subnet_vlan2_mc_end_ipv6       export wan_subnet_llc_br_vlan1_mc_end_ipv6
+
+pvc_llc_br_vlan1=$pvc_vlan2				    	export pvc_llc_br_vlan1
+wan_llc_br_vlan1_id=$wan_vlan2_id				export wan_llc_br_vlan1_id
+wan_full_llc_br_vlan1_id=$wan_full_vlan2_id              	export wan_full_llc_br_vlan1_id
+
+#Map the PVC information and vlan information
+multi_pvc_llc_br_vlan1=$multi_pvc_vlan1     export multi_pvc_llc_br_vlan1
+wan_llc_br_vlan1_id_multi=$wan_vlan2_id		export wan_llc_br_vlan1_id_multi
+wan_full_llc_br_vlan1_id_multi=$wan_full_vlan2_id                     export wan_full_llc_br_vlan1_id_multi
+
+multi_pvc_llc_br_vlan2=$multi_pvc_vlan2     export multi_pvc_llc_br_vlan2
+wan_llc_br_vlan2_id_multi=$wan_vlan3_id         export wan_llc_br_vlan2_id_multi
+wan_full_llc_br_vlan2_id_multi=$wan_full_vlan3_id                     export wan_full_llc_br_vlan2_id_multi
+
+multi_pvc_llc_br_vlan3=$multi_pvc_vlan3     export multi_pvc_llc_br_vlan3
+wan_llc_br_vlan3_id_multi=$wan_vlan4_id         export wan_llc_br_vlan3_id_multi
+wan_full_llc_br_vlan3_id_multi=$wan_full_vlan4_id                     export wan_full_llc_br_vlan3_id_multi
+
+multi_pvc_llc_br_vlan4=$multi_pvc_vlan4     export multi_pvc_llc_br_vlan4
+wan_llc_br_vlan4_id_multi=$wan_vlan5_id         export wan_llc_br_vlan4_id_multi
+wan_full_llc_br_vlan4_id_multi=$wan_full_vlan5_id                     export wan_full_llc_br_vlan4_id_multi
+
+multi_pvc_llc_br_vlan5=$multi_pvc_vlan5     export multi_pvc_llc_br_vlan5
+wan_llc_br_vlan5_id_multi=$wan_vlan6_id         export wan_llc_br_vlan5_id_multi
+wan_full_llc_br_vlan5_id_multi=$wan_full_vlan6_id                     export wan_full_llc_br_vlan5_id_multi
+
+multi_pvc_llc_br_vlan6=$multi_pvc_vlan6     export multi_pvc_llc_br_vlan6
+wan_llc_br_vlan6_id_multi=$wan_vlan7_id         export wan_llc_br_vlan6_id_multi
+wan_full_llc_br_vlan6_id_multi=$wan_full_vlan7_id                     export wan_full_llc_br_vlan6_id_multi
+
+multi_pvc_llc_br_vlan7=$multi_pvc_vlan7     export multi_pvc_llc_br_vlan7
+wan_llc_br_vlan7_id_multi=$wan_vlan8_id         export wan_llc_br_vlan7_id_multi
+wan_full_llc_br_vlan7_id_multi=$wan_full_vlan8_id                     export wan_full_llc_br_vlan7_id_multi
+
+multi_pvc_llc_br_vlan8=$multi_pvc_vlan8     export multi_pvc_llc_br_vlan8
+wan_llc_br_vlan8_id_multi=$wan_vlan9_id         export wan_llc_br_vlan8_id_multi
+wan_full_llc_br_vlan8_id_multi=$wan_full_vlan9_id                     export wan_full_llc_br_vlan8_id_multi
+
+multi_pvc_llc_br_vlan9=$multi_pvc_vlan9     export multi_pvc_llc_br_vlan9
+wan_llc_br_vlan9_id_multi=$wan_vlan10_id         export wan_llc_br_vlan9_id_multi
+wan_full_llc_br_vlan9_id_multi=$wan_full_vlan10_id                     export wan_full_llc_br_vlan9_id_multi
+
+
+
+#IPV6 lan/wan part IPs
+ipv6_lan_part_address="2001:";  		export ipv6_lan_part_address
+ipv6_wan_part_address="2000:";  		export ipv6_wan_part_address
+ipv6_wan_part_address_6rd="2002:";     		export ipv6_wan_part_address_6rd
+ipv6_wan_part_address_dslite="2003:";      	export ipv6_wan_part_address_dslite
+
+
+#wan ipv6 subnet part address
+wan_subnet_basic_ipv6_part_address="${ipv6_wan_part_address}:c0a8:0:";  				export wan_subnet_basic_ipv6_part_address
+wan_subnet_basic_ipv6_vlan2_part_address="${ipv6_wan_part_address}:c0a8:2:";  			export wan_subnet_basic_ipv6_vlan2_part_address
+wan_subnet_basic_ipv6_vlan3_part_address="${ipv6_wan_part_address}:c0a8:3:";  			export wan_subnet_basic_ipv6_vlan3_part_address
+
+wan_subnet_6rd_ipv6_part_address="${ipv6_wan_part_address_6rd}:${ppa_auto_name}:0:";     		export wan_subnet_6rd_ipv6_part_address
+wan_subnet_6rd_ipv6_vlan2_part_address="${ipv6_wan_part_address_6rd}:${ppa_auto_name}:2:";     	export wan_subnet_6rd_ipv6_vlan2_part_address
+wan_subnet_6rd_ipv6_vlan3_part_address="${ipv6_wan_part_address_6rd}:${ppa_auto_name}:3:";     	export wan_subnet_6rd_ipv6_vlan3_part_address
+
+wan_subnet_dslite_ipv6_part_address="${ipv6_wan_part_address_dslite}:${ppa_auto_name}:0:";     		export wan_subnet_6rd_ipv6_part_address
+wan_subnet_dslite_ipv6_vlan2_part_address="${ipv6_wan_part_address_dslite}:${ppa_auto_name}:2:";     	export wan_subnet_6rd_ipv6_vlan2_part_address
+wan_subnet_dslite_ipv6_vlan3_part_address="${ipv6_wan_part_address_dslite}:${ppa_auto_name}:3:";     	export wan_subnet_6rd_ipv6_vlan3_part_address
+										
+#wan ipv4 subnet part address (dslite use)
+wan_subnet_dslite_ipv4_part_address="192.${ppa_auto_name}.0.";     		export wan_subnet_dslite_ipv4_part_address
+wan_subnet_dslite_ipv4_vlan2_part_address="192.${ppa_auto_name}.2.";     	export wan_subnet_dslite_ipv4_vlan2_part_address
+wan_subnet_dslite_ipv4_vlan3_part_address="192.${ppa_auto_name}.3.";     	export wan_subnet_dslite_ipv4_vlan3_part_address
+
+
+#wan ipv4 subnet part address (gre use)
+wan_subnet_gre_ipv4_part_address="192.${ppa_auto_name}.0.";     		export wan_subnet_gre_ipv4_part_address
+wan_subnet_gre_ipv4_vlan2_part_address="192.${ppa_auto_name}.2.";     	export wan_subnet_gre_ipv4_vlan2_part_address
+wan_subnet_gre_ipv4_vlan3_part_address="192.${ppa_auto_name}.3.";     	export wan_subnet_gre_ipv4_vlan3_part_address
+
+wan_subnet_gre_ipv6_part_address="${gre_wan_subnet_ipv6_basic}:${ppa_auto_name}:0:";     	export wan_subnet_gre_ipv6_part_address
+wan_subnet_gre_ipv6_vlan2_part_address="${gre_wan_subnet_ipv6_basic}:${ppa_auto_name}:2:";     	export wan_subnet_gre_ipv6_vlan2_part_address
+wan_subnet_gre_ipv6_vlan3_part_address="${gre_wan_subnet_ipv6_basic}:${ppa_auto_name}:3:";     	export wan_subnet_gre_ipv6_vlan3_part_address
+
+wan_subnet_l2tp_ipv6_part_address="${gre_wan_subnet_ipv6_basic}:${ppa_auto_name}:0:";     	export wan_subnet_gre_ipv6_part_address
+wan_subnet_l2tp_ipv6_vlan2_part_address="${gre_wan_subnet_ipv6_basic}:${ppa_auto_name}:2:";     	export wan_subnet_gre_ipv6_vlan2_part_address
+wan_subnet_l2tp_ipv6_vlan3_part_address="${gre_wan_subnet_ipv6_basic}:${ppa_auto_name}:3:";     	export wan_subnet_gre_ipv6_vlan3_part_address
+
+
+
+#define pppoa wan subnet
+wan_subnet_pppoa="192.168.0.0";       export wan_subnet_pppoa
+wan_subnet_pppoa_mask="255.255.255.0";export wan_subnet_pppoa_mask
+pvc_pppoa="0.36";                     export pvc_pppoa
+
+#define DSL routed mode wan subnet
+wan_subnet_routed_mode="192.168.0.0";      export wan_subnet_routed_mode
+wan_subnet_routed_mode_mask="192.168.0.0"; export wan_subnet_routed_mode_mask
+pvc_routed_mode="0.36";                    export pvc_routed_mode
+
+#define direct path LAN subnet
+directpath_subnet="10.10.10.0"
+directpath_mask="255.255.255.0"
+
+#below provice common api which will be used by LAN/WAN PC and CPE
+#defie maximum ip number will be used by lan or wan respectively.
+#at least two: one for CPE LAN and one for LAN PC. But for 
+LAN_MAX_IP_NUM=3;  export LAN_MAX_IP_NUM
+WAN_MAX_IP_NUM=3;  export WAN_MAX_IP_NUM
+LAN_IP_OFFSET=50;  export LAN_IP_OFFSET
+WAN_IP_OFFSET=50;  export WAN_IP_OFFSET
+#export some ip
+#define tmp_cpe_lan_ip for cpe's lan ip
+#define tmp_cpe_wan_ip for cpe's wan ip
+#define tmp_lan_ip for lan pc's ip
+ 
+tmp_cpe_lan_ip=0;         export tmp_cpe_lan_ip
+tmp_cpe_wan_ip=0;         export tmp_cpe_wan_ip
+tmp_lan_ip_route_mode=0;  export tmp_lan_ip_route_mode
+tmp_lan_ip_bridge_mode=0; export tmp_lan_ip_bridge_mode
+tmp_cpe_gw_ip=0;          export tmp_cpe_gw_ip
+tmp_cpe_gw_ppp_ip=0;      export tmp_cpe_gw_ppp_ip
+
+new_ip_tos=0x12;          export new_ip_tos
+new_vlan_prio=5;          export new_vlan_prio;
+
+
+#WAN Server2 ( In fact, here we use a CPE as Server2 for PC's routint performance has limitation)
+wanserver2_lan_subnet_basic="192.168.200.0";     export wanserver_lan_subnet_basic
+wanserver2_lan_subnet_basic_mask="255.255.255.0";export wanserver2_lan_subnet_basic_mask
+wanserver2_wan_tunnel_dslite="192.168.210.0";              export wanserver2_lan_tunnel_dslite
+wanserver2_lan_mask_tunnel_dslite="255.255.255.0";              export wanserver2_lan_mask_tunnel_dslite
+wanserver2_wan_subnet_basic="192.168.220.0";     export wanserver2_wan_subnet_basic
+wanserver2_wan_subnet_basic_mask="255.255.255.0";export wanserver2_wan_subnet_basic_mask
+
+wanserver2_lan_subnet_basic_ipv6="2100::";        export wanserver2_lan_subnet_basic_ipv6
+wanserver2_wan_subnet_basic_ipv6="2200::";        export wanserver2_wan_subnet_basic_ipv6
+wanserver2_lan_tunnel_ipv6="2300::";              export wanserver2_wan_tunnel_ipv6
+
+wanserver2_lan_subnet_basic_ipv6_part_address="${wanserver2_lan_subnet_basic_ipv6%?}:${ppa_auto_name}:";        export wanserver2_lan_subnet_basic_ipv6_part_address
+wanserver2_wan_subnet_basic_ipv6_part_address="${wanserver2_wan_subnet_basic_ipv6%?}:${ppa_auto_name}:";        export wanserver2_wan_subnet_basic_ipv6_part_address
+wanserver2_lan_tunnel_ipv6_part_address="${wanserver2_lan_tunnel_ipv6%?}:${ppa_auto_name}:";                    export wanserver2_wan_tunnel_ipv6_part_address
+
+#IPV6 lan/wan subnetmask
+ipv6_subnetmask=64;     	export ipv6_subnetmask
+ipv6=ipv6			export ipv6
+ipv6_6rd=ipv6_6rd		export ipv6_6rd
+dslite=dslite           	export dslite
+dslite_ipv6=dslite_ipv6         export dslite_ipv6
+
+#Spirent IP
+Spirent_ip="" 		export Spirent_ip
+
+#path used for ipv6/ipv4 wan routing
+wan_route_ipv6=../../bin/wan_route_ipv6_$ppa_auto_name.sh;        	  	export wan_route_ipv6 #This path is used for both IPV6/IPV4 with same name [don't get confused]
+local_ifconfig_info_file="/tmp/ifconfig_info"; 			  	export local_ifconfig_info_file #changed
+tmp_cpe_ifconfig_info_file="/tmp/ifconfig_info";    			  	export tmp_cpe_ifconfig_info_file
+wan_side_tmp_folder="/tmp/";                              	  	        export wan_side_tmp_folder
+tmp_wan_ifconfig_info_file="${wan_side_tmp_folder}/ifconfig_info_$ppa_auto_name";   	export tmp_wan_ifconfig_info_file
+
+wan_side_route_ipv6_file="${wan_side_tmp_folder}/wan_route_ipv6_$ppa_auto_name.sh";	export wan_side_route_ipv6_file
+wan_side_ifconfig_info_file="${wan_side_tmp_folder}/wan_ifconfig_info_$ppa_auto_name";   	export wan_side_ifconfig_info_file
+#Path to config file path in PC
+conf_file_path="../cfg/cpe_env_global"						export conf_file_path
+
+
+#Hp 2650 switch configuretion tem file for d5          
+m_switch_setup_d5=../../cfg/m_switch_setup_d5;					export m_switch_setup_d5
+
+#Hp 2650 switch control perl script path
+Switch_Control=../../bin/Switch_Control.pl;                               	export Switch_Control
+
+#addmisc extract function 
+addmisc_extract="../bin/addmisc_extract.pl"                                     export addmisc_extract
+addmisc_extract_data="/tmp/addmisc_data"                                  	export addmisc_extract_data
+uboot_file_name=""                                                              export uboot_file_name
+uboot_data="/tmp/uboot_data"							export uboot_data
+uboot_data_nand="/tmp/uboot_data_nand"					export uboot_data_nand
+Wan_Mac_Address_File="/tmp/Wan_Mac_Address_File"				export Wan_Mac_Address_File #changed
+
+SERIAL="/dev/ttyS0"
+
+#just for logic use
+num=10 
+Ipv6_address="0"
+zero=0
+str_to_find_on_wan_side=""
+set=1
+unset=0
+delay=1
+mac_address=""
+NAS_SET=0
+ppa_echo_enable_flag=0;
+enable_ipv6_neigh_flag=1
+ppp_interface_up=$unset
+ppp_interface_count=0
+MIX_MODE="Mixed mode"
+
+#Bangalore Setup enable/disable
+BANGALORE_SETUP=$unset
+
+#ping enable/disable
+ping_enable=0;  export ping_enable
+
+#set neigh table function enable/disable status
+SET_NEIGH_STATUS=$set  export SET_NEIGH_STATUS
+
+#set Wan side enable/disable status
+WANSIDE_UNSET=$unset   export WANSIDE_UNSET
+
+#parm for tcp client ipv6
+PACKET_GEN_PORT_IPV6=2001
+
+#CPE serial device (set this as per your CPE Settings) just to print debug info
+cpe_serial_device=/dev/ttyS1
+
+#Tunneling Device 6rd
+Tunnel_Dev_6rd_Name=6rd_$ppa_auto_name		export Tunnel_Dev_6rd_Name	
+
+#Tunneling Device dslite
+Tunnel_Dev_dslite_Name=dslite_$ppa_auto_name	export Tunnel_Dev_dslite_Name
+
+
+check_ppp_interface_up()
+{
+	ppp_interface_up=$unset
+	ppp_interface_count=0
+	
+	while [ $ppp_interface_up != $set ]
+	do
+		ppa_echo "Waiting for ppp interface to get UP .......[CPE SIDE]"			
+		touch $local_ifconfig_info_file
+		$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "rm $tmp_cpe_ifconfig_info_file"	
+		cat_mib_cmd="ifconfig > $tmp_cpe_ifconfig_info_file"
+		$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "$cat_mib_cmd" -d $local_ifconfig_info_file
+		$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s $tmp_cpe_ifconfig_info_file -d $local_ifconfig_info_file
+
+		FILE=$local_ifconfig_info_file
+		BAKIFS=$IFS
+		exec 3<&0
+		exec 0<"$FILE"
+		while read -r line
+		do
+			check_ppp=$(echo $line | grep "P-t-P:")
+			if [ "$check_ppp" != "" ];then
+				ppa_echo "PPP Interface [CPE SIDE] UP"			
+				ppp_interface_up=$set
+			fi	
+			
+		done
+		exec 0<&3
+		IFS=$BAKIFS
+		rm $local_ifconfig_info_file
+
+			if [ $ppp_interface_count -lt 50 ];then
+				ppp_interface_count=`expr $ppp_interface_count + 1`;
+			else
+				ppp_interface_up=$set
+			fi			
+	done
+}
+
+
+ppa_echo()
+{
+ if [ $ppa_echo_enable_flag -gt 0 ] ; then     
+	str="";
+	for thing in "$@"; do
+           str="$str $1 "
+	done	 
+	echo "   $str" 
+ fi
+}
+
+#delay before start transmitting data
+delay_bf_transmit=0; export delay_bf_transmit
+tcp_client_packet_size=1000; export tcp_client_packet_size
+#note, for tunnel on pppoe, even 10 packets per second is also too fast.
+min_packet_per_second=1; export min_packet_per_second
+min_ping_try=10; export min_ping_try
+start_tcp_client()
+{
+    ip_address=$1
+    udp_port=$2
+    session_number_udp=$3
+    session_number_tcp=$4 
+    id_file=$5
+    result_file=$6
+
+    cmd_name=$tcp_client;
+    ping_name=ppa_ping
+    #check whether ipv6
+    [[ "$ip_address" =~ ":" ]] && cmd_name=$tcp_client6 && ping_name=ppa_ping6
+    ping_enable=1
+    $ping_name $min_ping_try  $ip_address
+    ping_enable=0
+
+    ppa_echo "TCP CLIENT_IPV4 :UDP: RUNNING on port:$ppa_auto_tcp_generator_port"
+    full_cmd_str="$cmd_name -s $ip_address -p $udp_port -u $session_number_udp -t $session_number_tcp -d $id_file -r $result_file -m $tcp_client_packet_size -l $delay_bf_transmit -n $min_packet_per_second"
+    echo "   $full_cmd_str"
+    $full_cmd_str  &
+}
+
+set_ip_address() #support muti vlan
+{
+	interface=$1
+	ip_address=$2
+	subnetmask=$3
+
+	check_ip=$(echo $ip_address | grep ":")
+	if [ "$check_ip" != "" ];then
+		ppa_echo "Setting ipv6 address"	
+
+		check_dot=$(echo $interface | grep "\.")
+		if [ "$check_dot" != "" ];then
+			interface_base=$( echo $interface | awk -F[..] '{print $1}')
+			vlan_tag=$( echo $interface | awk -F[..] '{print $2}')
+			ppa_echo "vconfig add $interface_base $vlan_tag"	
+			vconfig add $interface_base $vlan_tag
+	
+			ppa_echo "ifconfig $interface_base up"
+			ifconfig $interface_base up
+                        ifconfig $interface_base.$vlan_tag up	  	
+	
+		else
+			ppa_echo "vlan not found"
+		fi
+	
+		ppa_echo "ip -6 addr add $ip_address/$subnetmask dev $interface"
+		ip -6 addr add $ip_address/$subnetmask dev $interface
+
+		ppa_echo "ifconfig $interface up"
+		ifconfig $interface up	
+	else
+		ppa_echo "Setting ipv4 address"	
+		check_dot=$(echo $interface | grep "\.")
+		if [ "$check_dot" != "" ];then
+	
+			interface_base=$( echo $interface | awk -F[..] '{print $1}')
+			vlan_tag=$( echo $interface | awk -F[..] '{print $2}')
+			ppa_echo "vconfig add $interface_base $vlan_tag"	
+			vconfig add $interface_base $vlan_tag
+	
+			ppa_echo "ifconfig $interface_base up"
+			ifconfig $interface_base up
+                        ifconfig $interface_base.$vlan_tag up
+		else
+			ppa_echo "vlan not found"
+		fi
+	
+		if [ "$subnetmask" != "" ]
+		then
+			ppa_echo "ip addr add $ip_address/$subnetmask dev $interface" 
+			ip addr add $ip_address/$subnetmask dev $interface 
+		else
+			ppa_echo "ifconfig $interface $ip_address up"
+			ifconfig $interface $ip_address up
+		fi
+	fi
+}
+
+set_default_gw()
+{
+	gateway_address=$1
+	if [ "$gateway_address" == "" ]
+	then
+		ppa_echo "Setting default gate way :IPV4"
+		ppa_echo "ip route add default dev $cpe_wan_if"
+		ip route add default dev $cpe_wan_if
+	else
+		ppa_echo "Setting default gate way :IPV4"
+		ppa_echo "route add default gw $gateway_address"
+		route add default gw $gateway_address
+	fi
+}
+
+set_routeing_table_lanside()
+{
+	Target_Host=$1
+	VIA_gateway_address=$2
+	subnetmask=$3
+	Interface=$4
+
+	check_ip=$(echo $VIA_gateway_address | grep ":")
+	if [ "$check_ip" != "" ];then
+		ppa_echo "Setting Routing table LAN side"	
+		ppa_echo "ip -6 route add $Target_Host/$subnetmask dev $Interface via $VIA_gateway_address"
+		ip -6 route add $Target_Host/$subnetmask dev $Interface via $VIA_gateway_address
+	else
+	
+		ppa_echo "Setting Routing table LAN side :IPV4"	
+		ppa_echo "ip route add $Target_Host/$subnetmask via $VIA_gateway_address"
+		ip route add $Target_Host/$subnetmask via $VIA_gateway_address
+	fi
+}
+
+set_ip_address_wanside()
+{
+	interface=$1
+	ip_address=$2
+	subnetmask=$3
+
+	check_ip=$(echo $ip_address | grep ":")
+	if [ "$check_ip" != "" ];then
+		cmd="ip -6 addr add $ip_address/$subnetmask dev $interface"
+		ppa_echo "$cmd"
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd"
+	else
+		cmd="ip addr add $ip_address/$subnetmask dev $interface"
+		ppa_echo "$cmd"
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd"
+	fi
+}
+
+set_routeing_table_wanside()
+{
+	Target_Host=$1
+	VIA_gateway_address=$2
+	subnetmask=$3
+	Interface=$4
+	server_id=$5
+	mode=""
+
+
+	if [ "$server_id" == "" ];then
+		server_id=0;
+		mode="wan"
+	else
+		mode="cpe"		#work around for ppa_wan_proxy server 2
+	fi
+
+	check_ip=$(echo $VIA_gateway_address | grep ":")
+	if [ "$check_ip" != "" ];then
+		echo "Setting IPV6 ROUTING at WanSide"
+		#generate_set_ipv6_rout_wan_side_script
+			rm $wan_route_ipv6
+			echo "" >> $wan_route_ipv6 
+		if [ $server_id == "2" ];then
+			echo "$server2_bin_path/ip -6 route add $Target_Host/$subnetmask dev $Interface via $VIA_gateway_address" >> $wan_route_ipv6
+		else
+			echo "ip -6 route add $Target_Host/$subnetmask dev $Interface via $VIA_gateway_address" >> $wan_route_ipv6
+		fi
+			echo "" >> $wan_route_ipv6 
+			echo "exit 0" >> $wan_route_ipv6
+
+		ifconfig $ppa_auto_if_wan promisc	
+	        ifconfig $ppa_auto_if_wan up
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "rm -f $wan_side_route_ipv6_file" -r $server_id
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c put -s $wan_route_ipv6 -d $wan_side_tmp_folder -r $server_id
+		
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c run -s $wan_side_route_ipv6_file -r $server_id
+	else
+		echo "Setting IPV4 ROUTING at WanSide"
+		#	cmd="ip route add $Target_Host/$subnetmask via $VIA_gateway_address"
+		if [ $server_id == "2" ];then
+			cmd="route add -host $Target_Host gw $VIA_gateway_address"
+			echo "$cmd"
+			$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -r $server_id
+		else
+			cmd="ip route add $Target_Host via $VIA_gateway_address"
+			echo "$cmd"
+			$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -r $server_id
+		fi
+	fi
+}
+
+run_ppacmd_addwan()
+{
+	interface=$1
+	serverid=$2
+
+	if [ "$serverid" == "" ];then
+		mode="wan"
+	else
+		mode="cpe"		#work around for ppa_wan_proxy server 2
+	fi
+	cmd="ppacmd addwan -i $interface"
+	echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -r $serverid
+}
+
+
+set_tunnel_6rd_wan()
+{
+	Tunnel_Dev_6rd_Name=$1
+	local=$2
+	remote=$3
+	ip_address=$4
+	sub_net_mask=$5
+	server_id=$6
+	mode=""
+	if [ "$server_id" == "" ];then
+		server_id=0;
+		mode="wan"
+	else
+		mode="cpe"		#work around for ppa_wan_proxy server 2
+	fi
+
+	cmd="ip tunnel add $Tunnel_Dev_6rd_Name mode sit local $local remote $remote ttl 64"
+	echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -g $ppa_auto_debug -r $server_id
+	
+
+if [ "$server_id" == "2" ];then
+	cmd="ifconfig $Tunnel_Dev_6rd_Name up"
+	echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -g $ppa_auto_debug -r $server_id
+	
+else
+	cmd="ip link set $Tunnel_Dev_6rd_Name up"
+	echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -g $ppa_auto_debug -r $server_id
+	
+fi
+	cmd="ip -6 addr add $ip_address/$sub_net_mask dev $Tunnel_Dev_6rd_Name"
+	echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -g $ppa_auto_debug -r $server_id
+}
+
+set_tunnel_dslite_wan()
+{
+	Tunnel_Dev_6rd_Name=$1
+	local=$2
+	remote=$3
+	ip_address=$4
+	sub_net_mask=$5
+	server_id=$6
+	mode=""
+
+	if [ "$server_id" == "" ];then
+		server_id=0;
+		mode="wan"
+	else
+		mode="cpe"		#work around for ppa_wan_proxy server 2
+	fi
+
+	cmd="modprobe ip6_tunnel"
+	echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -g $ppa_auto_debug -r $server_id
+	
+
+	cmd="ip -6 tunnel add $Tunnel_Dev_dslite_Name mode ip4ip6 local $local remote $remote"
+	echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -g $ppa_auto_debug -r $server_id
+	
+
+	cmd="ifconfig $Tunnel_Dev_dslite_Name up"
+	echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -g $ppa_auto_debug -r $server_id
+	
+
+
+	cmd="ip addr add $ip_address/$sub_net_mask dev $Tunnel_Dev_dslite_Name"
+	echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t $mode -c cmd -s "$cmd" -g $ppa_auto_debug -r $server_id
+}
+
+
+find_interface_for_neigh_table_cpesetting()
+{
+	line="$@"
+	check=$(echo $line | grep "$fixed_wan_side_if")
+	if [ "$check" != "" ];then
+		ppa_echo $check	
+		mac_address=$( echo $check | awk '{print $5}')
+		ppa_echo "mac_address=$mac_address"
+	fi
+}
+
+get_ipv6_mac_address_wan()
+{
+	if [ $SET_NEIGH_STATUS -eq $set ];then
+		ppa_echo "set_ipv6_mac_neigh_table_cpeside STATUS :enable"
+		mac_address=""
+
+		touch $local_ifconfig_info_file	
+		ifconfig $ppa_auto_if_wan promisc
+		ifconfig $ppa_auto_if_wan up 
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "rm $tmp_wan_ifconfig_info_file"	
+		cat_mib_cmd="ifconfig > $tmp_wan_ifconfig_info_file"
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cat_mib_cmd" -d $local_ifconfig_info_file
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c get -s $tmp_wan_ifconfig_info_file -d $local_ifconfig_info_file
+
+		FILE=$local_ifconfig_info_file
+		BAKIFS=$IFS
+		exec 3<&0
+		exec 0<"$FILE"
+		colum=$set;
+		while read -r line
+		do
+			find_interface_for_neigh_table_cpesetting $line
+		done
+		exec 0<&3
+		IFS=$BAKIFS
+		
+		rm $Wan_Mac_Address_File
+		if [ $enable_ipv6_neigh_flag -gt 0 ] ; then 
+		   echo "mac_address="$mac_address"    export mac_address" > $Wan_Mac_Address_File
+		else
+			echo "disable-neigh" > $Wan_Mac_Address_File
+		fi
+
+	else
+		ppa_echo "set_ipv6_mac_neigh_table_cpeside :disable"
+	fi
+
+	rm $local_ifconfig_info_file	
+}
+
+find_interface_for_neigh_table_wansetting()
+{
+	line="$@"
+	check=$(echo $line | grep "$phy_wan_ifname0")
+
+	if [ "$check" != "" ];then
+		interface=$( echo $check | awk '{print $1}')
+		if [ "$cpe_wan_if" == $interface ];then
+			mac_address=$( echo $check | awk '{print $5}')
+			ppa_echo "mac_address for $interface=$mac_address"
+		fi
+	fi
+}
+
+set_ipv6_mac_neigh_table_wanside()
+{
+	wan_interface=$1
+	wan_gateway_address=$2
+
+	if [ $SET_NEIGH_STATUS -eq $set ];then		
+		ppa_echo "set_ipv6_mac_neigh_table_wanside STATUS :enable"
+		mac_address=""
+
+		touch $local_ifconfig_info_file	
+		$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "rm $tmp_cpe_ifconfig_info_file"	
+		cat_mib_cmd="ifconfig > $tmp_cpe_ifconfig_info_file"
+		$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "$cat_mib_cmd" -d $local_ifconfig_info_file
+		$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s $tmp_cpe_ifconfig_info_file -d $local_ifconfig_info_file
+
+		FILE=$local_ifconfig_info_file
+		BAKIFS=$IFS
+		exec 3<&0
+		exec 0<"$FILE"
+		colum=$set;
+		while read -r line
+		do
+			find_interface_for_neigh_table_wansetting $line
+		done
+		exec 0<&3
+		IFS=$BAKIFS
+
+		ppa_echo "ip -6 neigh add $wan_gateway_address dev $wan_interface lladdr $mac_address nud permanent"
+		rm $wan_route_ipv6
+		echo "" >> $wan_route_ipv6 
+		echo "ip -6 neigh add $wan_gateway_address dev $wan_interface lladdr $mac_address nud permanent" >> $wan_route_ipv6
+		echo "#sleep $delay" >> $wan_route_ipv6
+		echo "ip -6 neigh change $wan_gateway_address dev $wan_interface lladdr $mac_address nud permanent" >> $wan_route_ipv6
+		echo "exit 0" >> $wan_route_ipv6
+		echo "" >> $wan_route_ipv6 
+
+		ifconfig $ppa_auto_if_wan promisc	
+                ifconfig $ppa_auto_if_wan up
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "rm -f $wan_side_route_ipv6_file" -g $ppa_auto_debug
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c put -s $wan_route_ipv6   -d $wan_side_tmp_folder -g $ppa_auto_debug
+		
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c run -s $wan_side_route_ipv6_file -g $ppa_auto_debug
+	else
+		ppa_echo "set_ipv6_mac_neigh_table_wanside STATUS :disable"
+	fi
+
+	rm $local_ifconfig_info_file	
+}
+
+find_ppp_interface_cpe_side_ipv6()
+{
+	line="$@"
+
+	if [ $ppp -eq $set ];then
+		ppa_echo ""	
+		ppa_echo "CPE side PPP settings :$line"		
+		check1=$( echo $line | awk -F[.:] '{print $2}')
+		check2=$( echo $line | awk -F[.:] '{print $3}')
+		check3=$( echo $line | awk -F[.:] '{print $4}')
+		check4=$( echo $line | awk -F[.:] '{print $5}')
+		check4=$( echo $check4 | awk  '{print $1}')
+		str_to_find_on_wan_side="P-t-P:"$check1"."$check2"."$check3"."$check4
+
+		ppa_echo ""
+		ppa_echo "string_to_find_on_wan_side:   $str_to_find_on_wan_side"
+		ppp=$unset
+	fi
+	check_ppp=$(echo $line | grep "ppp")
+	if [ "$check_ppp" != "" ];then
+		ppp=$set
+		ppa_echo "ppp set $ppp"		
+	fi
+}
+
+generate_set_ipv6_ppp_rout_wan_side_script()
+{
+	Target_LAN_IP_ADDRESS=$1
+	CPE_gateway_address=$2
+	ipv6_subnetmask=$3
+
+	rm $wan_route_ipv6
+	echo "set_string_back_up=\"\""	>> $wan_route_ipv6
+	echo "set=1" >> $wan_route_ipv6
+	echo "unset=0" >> $wan_route_ipv6
+	echo "ppp=\$unset" >> $wan_route_ipv6
+	echo "str_to_find_on_wan_side=\"$str_to_find_on_wan_side\"" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "set_ppp_rout_wan_side_script()" >> $wan_route_ipv6
+	echo "{" >> $wan_route_ipv6
+	echo "line=\"\$@\"" >> $wan_route_ipv6	
+	echo "if [ \$ppp -eq \$set ];then" >> $wan_route_ipv6
+	echo "echo \"CPE side PPP settings :\$line\"" >> $wan_route_ipv6
+	echo "check=\$(echo \$line | grep \"\$str_to_find_on_wan_side\")" >> $wan_route_ipv6
+	echo "if [ \"\$check\" != \"\" ];then" >> $wan_route_ipv6
+	echo "ppp_wan_interface=\$( echo \$set_string_back_up | awk  '{print \$1}')" >> $wan_route_ipv6
+	echo "echo \"wan ppp interface = \$ppp_wan_interface\"" >> $wan_route_ipv6
+	echo "ppp=\$unset" >> $wan_route_ipv6
+	echo "else" >> $wan_route_ipv6
+	echo "ppp=\$unset" >> $wan_route_ipv6
+	echo "fi" >> $wan_route_ipv6
+	echo "fi" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "check_ppp=\$(echo \$line | grep \"ppp\")" >> $wan_route_ipv6
+	echo "if [ \"\$check_ppp\" != \"\" ];then" >> $wan_route_ipv6
+	echo "ppp=\$set" >> $wan_route_ipv6
+	echo "set_string_back_up=\$check_ppp" >> $wan_route_ipv6
+	echo "fi" >> $wan_route_ipv6
+	echo "}" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "rm $wan_side_ifconfig_info_file" >> $wan_route_ipv6
+	echo "ifconfig > $wan_side_ifconfig_info_file" >> $wan_route_ipv6	
+	echo "FILE=\"$wan_side_ifconfig_info_file\"" >> $wan_route_ipv6
+	echo "BAKIFS=\$IFS" >> $wan_route_ipv6
+	echo "exec 3<&0" >> $wan_route_ipv6
+	echo "exec 0<\"\$FILE\"" >> $wan_route_ipv6
+	echo "while read -r line" >> $wan_route_ipv6
+	echo "do" >> $wan_route_ipv6
+	echo "set_ppp_rout_wan_side_script \$line" >> $wan_route_ipv6
+	echo "done" >> $wan_route_ipv6
+	echo "exec 0<&3" >> $wan_route_ipv6
+	echo "IFS=\$BAKIFS" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6 
+	echo "ip -6 addr add $CPE_gateway_address/$ipv6_subnetmask dev \$ppp_wan_interface" >> $wan_route_ipv6
+	echo "ip -6 route add $Target_LAN_IP_ADDRESS/$ipv6_subnetmask dev \$ppp_wan_interface" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6 
+	echo "exit 0" >> $wan_route_ipv6
+}
+
+get_dynamic_ppp_interfacename_and_set_route_wan_ipv6()
+{
+	Target_LAN_IP_ADDRESS=$1
+	CPE_gateway_address=$2
+	ipv6_subnetmask=$3
+
+	check_ppp_interface_up
+	touch $local_ifconfig_info_file
+	ppp=$unset
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "rm $tmp_cpe_ifconfig_info_file"	
+	cat_mib_cmd="ifconfig > $tmp_cpe_ifconfig_info_file"
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "$cat_mib_cmd" -d $local_ifconfig_info_file
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s $tmp_cpe_ifconfig_info_file -d $local_ifconfig_info_file
+
+	FILE=$local_ifconfig_info_file
+	BAKIFS=$IFS
+	exec 3<&0
+	exec 0<"$FILE"
+	colum=$set;
+	while read -r line
+	do
+		find_ppp_interface_cpe_side_ipv6 $line
+	done
+	exec 0<&3
+	IFS=$BAKIFS
+	
+	generate_set_ipv6_ppp_rout_wan_side_script $Target_LAN_IP_ADDRESS $CPE_gateway_address $ipv6_subnetmask
+
+	ifconfig $ppa_auto_if_wan promisc	
+        ifconfig $ppa_auto_if_wan up
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "rm -f $wan_side_ifconfig_info_file" -g $ppa_auto_debug	
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "rm -f $wan_side_route_ipv6_file" -g $ppa_auto_debug
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c put -s $wan_route_ipv6   -d $wan_side_tmp_folder -g $ppa_auto_debug
+	sleep $delay
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c run -s $wan_side_route_ipv6_file -g $ppa_auto_debug
+	rm $local_ifconfig_info_file	
+}
+
+
+find_ppp_interface_cpe_side_ipv6_dslite()
+{
+	line="$@"
+
+	if [ $ppp -eq $set ];then
+		echo ""	
+		ppa_echo "CPE side PPP settings :$line"		
+		check1=$( echo $line | awk -F[.:] '{print $2}')
+		check2=$( echo $line | awk -F[.:] '{print $3}')
+		check3=$( echo $line | awk -F[.:] '{print $4}')
+		check4=$( echo $line | awk -F[.:] '{print $5}')
+		check4=$( echo $check4 | awk  '{print $1}')
+		str_to_find_on_wan_side="P-t-P:"$check1"."$check2"."$check3"."$check4
+
+		ppa_echo ""
+		ppa_echo "string_to_find_on_wan_side:   $str_to_find_on_wan_side"
+		ppp=$unset
+	fi
+	check_ppp=$(echo $line | grep "ppp")
+	if [ "$check_ppp" != "" ];then
+		ppp=$set
+		ppa_echo "ppp set $ppp"		
+	fi
+}
+
+generate_set_ipv6_ppp_rout_wan_side_script_dslite()
+{
+	ip_address=$1
+	ipv6_subnetmask=$2
+	Gate_way_address=$3
+
+	rm $wan_route_ipv6
+	echo "set_string_back_up=\"\""	>> $wan_route_ipv6
+	echo "set=1" >> $wan_route_ipv6
+	echo "unset=0" >> $wan_route_ipv6
+	echo "ppp=\$unset" >> $wan_route_ipv6
+	echo "str_to_find_on_wan_side=\"$str_to_find_on_wan_side\"" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "set_ppp_rout_wan_side_script()" >> $wan_route_ipv6
+	echo "{" >> $wan_route_ipv6
+	echo "line=\"\$@\"" >> $wan_route_ipv6	
+	echo "if [ \$ppp -eq \$set ];then" >> $wan_route_ipv6
+	echo "echo \"CPE side PPP settings :\$line\"" >> $wan_route_ipv6
+	echo "check=\$(echo \$line | grep \"\$str_to_find_on_wan_side\")" >> $wan_route_ipv6
+	echo "if [ \"\$check\" != \"\" ];then" >> $wan_route_ipv6
+	echo "ppp_wan_interface=\$( echo \$set_string_back_up | awk  '{print \$1}')" >> $wan_route_ipv6
+	echo "echo \"wan ppp interface = \$ppp_wan_interface\"" >> $wan_route_ipv6
+	echo "ppp=\$unset" >> $wan_route_ipv6
+	echo "else" >> $wan_route_ipv6
+	echo "ppp=\$unset" >> $wan_route_ipv6
+	echo "fi" >> $wan_route_ipv6
+	echo "fi" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "check_ppp=\$(echo \$line | grep \"ppp\")" >> $wan_route_ipv6
+	echo "if [ \"\$check_ppp\" != \"\" ];then" >> $wan_route_ipv6
+	echo "ppp=\$set" >> $wan_route_ipv6
+	echo "set_string_back_up=\$check_ppp" >> $wan_route_ipv6
+	echo "fi" >> $wan_route_ipv6
+	echo "}" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "rm $wan_side_ifconfig_info_file" >> $wan_route_ipv6
+	echo "ifconfig > $wan_side_ifconfig_info_file" >> $wan_route_ipv6	
+	echo "FILE=\"$wan_side_ifconfig_info_file\"" >> $wan_route_ipv6
+	echo "BAKIFS=\$IFS" >> $wan_route_ipv6
+	echo "exec 3<&0" >> $wan_route_ipv6
+	echo "exec 0<\"\$FILE\"" >> $wan_route_ipv6
+	echo "while read -r line" >> $wan_route_ipv6
+	echo "do" >> $wan_route_ipv6
+	echo "set_ppp_rout_wan_side_script \$line" >> $wan_route_ipv6
+	echo "done" >> $wan_route_ipv6
+	echo "exec 0<&3" >> $wan_route_ipv6
+	echo "IFS=\$BAKIFS" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6 
+	echo "ip -6 addr add $ip_address/$ipv6_subnetmask dev \$ppp_wan_interface" >> $wan_route_ipv6
+	echo "#sleep 1" >> $wan_route_ipv6 
+	echo "ip -6 route add $Gate_way_address dev \$ppp_wan_interface" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6 
+	echo "exit 0" >> $wan_route_ipv6
+}
+
+get_dynamic_ppp_interfacename_and_set_route_wan_ipv6_dslite()
+{
+	ip_address=$1
+	ipv6_subnetmask=$2
+	Gate_way_address=$3
+
+	check_ppp_interface_up
+	touch $local_ifconfig_info_file
+	ppp=$unset
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "rm $tmp_cpe_ifconfig_info_file"	
+	cat_mib_cmd="ifconfig > $tmp_cpe_ifconfig_info_file"
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "$cat_mib_cmd" -d $local_ifconfig_info_file
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s $tmp_cpe_ifconfig_info_file -d $local_ifconfig_info_file
+
+	FILE=$local_ifconfig_info_file
+	BAKIFS=$IFS
+	exec 3<&0
+	exec 0<"$FILE"
+	colum=$set;
+	while read -r line
+	do
+		find_ppp_interface_cpe_side_ipv6_dslite $line
+	done
+	exec 0<&3
+	IFS=$BAKIFS
+	
+	generate_set_ipv6_ppp_rout_wan_side_script_dslite $ip_address $ipv6_subnetmask $Gate_way_address
+
+	ifconfig $ppa_auto_if_wan promisc	
+        ifconfig $ppa_auto_if_wan up
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "rm -f $wan_side_ifconfig_info_file" -g $ppa_auto_debug	
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "rm -f $wan_side_route_ipv6_file" -g $ppa_auto_debug
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c put -s $wan_route_ipv6   -d $wan_side_tmp_folder -g $ppa_auto_debug
+	
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c run -s $wan_side_route_ipv6_file -g $ppa_auto_debug
+	rm $local_ifconfig_info_file	
+}
+
+
+find_ppp_interface_set_tunnel_cpe_side()
+{
+	line="$@"
+
+	if [ $ppp -eq $set ];then
+		ppa_echo ""	
+		ppa_echo "CPE side PPP settings :$line"		
+		check1=$( echo $line | awk -F[.:] '{print $2}')
+		check2=$( echo $line | awk -F[.:] '{print $3}')
+		check3=$( echo $line | awk -F[.:] '{print $4}')
+		check4=$( echo $line | awk -F[.:] '{print $5}')
+		check4=$( echo $check4 | awk  '{print $1}')
+		local="$check1"."$check2"."$check3"."$check4"
+
+
+		check1=$( echo $line | awk -F[.:] '{print $6}')
+		check2=$( echo $line | awk -F[.:] '{print $7}')
+		check3=$( echo $line | awk -F[.:] '{print $8}')
+		check4=$( echo $line | awk -F[.:] '{print $9}')
+		check4=$( echo $check4 | awk  '{print $1}')
+		remote="$check1"."$check2"."$check3"."$check4"
+
+		ip tunnel add $Tunnel_Dev_6rd_Name mode sit local $local remote $remote ttl 64
+		
+		ifconfig $Tunnel_Dev_6rd_Name up
+		ppp=$unset
+	fi
+	check_ppp=$(echo $line | grep "ppp")
+	if [ "$check_ppp" != "" ];then
+		ppp=$set
+		ppa_echo "ppp set $ppp"		
+	fi
+}
+
+set_6rd_tunnel_cpe_side_for_ppp()
+{
+	rm $tmp_cpe_ifconfig_info_file
+	ifconfig > $tmp_cpe_ifconfig_info_file
+	ppp=$unset
+
+	FILE=$tmp_cpe_ifconfig_info_file
+	BAKIFS=$IFS
+	exec 3<&0
+	exec 0<"$FILE"
+	while read -r line
+	do
+		find_ppp_interface_set_tunnel_cpe_side $line
+	done
+	exec 0<&3
+	IFS=$BAKIFS
+}
+
+find_ppp_interface_set_tunnel_wan_side()
+{
+	line="$@"
+
+	if [ $ppp -eq $set ];then
+		ppa_echo ""	
+		ppa_echo "CPE side PPP settings :$line"		
+		check1=$( echo $line | awk -F[.:] '{print $2}')
+		check2=$( echo $line | awk -F[.:] '{print $3}')
+		check3=$( echo $line | awk -F[.:] '{print $4}')
+		check4=$( echo $line | awk -F[.:] '{print $5}')
+		check4=$( echo $check4 | awk  '{print $1}')
+		remote="$check1"."$check2"."$check3"."$check4"
+
+
+		check1=$( echo $line | awk -F[.:] '{print $6}')
+		check2=$( echo $line | awk -F[.:] '{print $7}')
+		check3=$( echo $line | awk -F[.:] '{print $8}')
+		check4=$( echo $line | awk -F[.:] '{print $9}')
+		check4=$( echo $check4 | awk  '{print $1}')
+		local="$check1"."$check2"."$check3"."$check4"
+
+		ppa_echo "ip tunnel add $Tunnel_Dev_6rd_Name mode sit local $local remote $remote ttl 64"	
+		cmd="ip tunnel add $Tunnel_Dev_6rd_Name mode sit local $local remote $remote ttl 64"
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd"
+
+		
+		ppa_echo "ifconfig $Tunnel_Dev_6rd_Name up"	
+		cmd="ifconfig $Tunnel_Dev_6rd_Name up"
+		$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd"
+
+		ppp=$unset
+	fi
+	check_ppp=$(echo $line | grep "ppp")
+	if [ "$check_ppp" != "" ];then
+		ppp=$set
+		ppa_echo "ppp set $ppp"		
+	fi
+}
+
+set_6rd_tunnel_wan_side_for_ppp()
+{
+ip_address=$1
+sub_net_mask=$2
+
+	check_ppp_interface_up
+	touch $local_ifconfig_info_file
+	ppp=$unset
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "rm $tmp_cpe_ifconfig_info_file"	
+	cat_mib_cmd="ifconfig > $tmp_cpe_ifconfig_info_file"
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "$cat_mib_cmd" -d $local_ifconfig_info_file
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s $tmp_cpe_ifconfig_info_file -d $local_ifconfig_info_file
+
+	ppp=$unset
+	FILE=$local_ifconfig_info_file
+	BAKIFS=$IFS
+	exec 3<&0
+	exec 0<"$FILE"
+	while read -r line
+	do
+		find_ppp_interface_set_tunnel_wan_side $line
+	done
+	exec 0<&3
+	IFS=$BAKIFS
+
+
+	cmd="ip -6 addr add $ip_address/$sub_net_mask dev $Tunnel_Dev_6rd_Name"
+	ppa_echo "$cmd"
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -g $ppa_auto_debug
+	
+	rm $local_ifconfig_info_file
+}
+
+
+set_ipv6_mac_neigh_table_cpeside()
+{
+	cpe_wan_interface=$1
+	cpe_wan_gateway_address=$2
+	mac_address=$3
+
+	ppa_echo "ip -6 neigh add $cpe_wan_gateway_address dev $cpe_wan_interface lladdr $mac_address nud permanent"
+	ip -6 neigh add $cpe_wan_gateway_address dev $cpe_wan_interface lladdr $mac_address nud permanent	
+}
+
+
+find_ppp_interface_cpe_side_ipv6_l2tp()
+{
+	line="$@"
+
+	if [ $ppp -eq $set ];then
+		echo ""	
+		ppa_echo "CPE side PPP settings :$line"		
+		check1=$( echo $line | awk -F[.:] '{print $2}')
+		check2=$( echo $line | awk -F[.:] '{print $3}')
+		check3=$( echo $line | awk -F[.:] '{print $4}')
+		check4=$( echo $line | awk -F[.:] '{print $5}')
+		check4=$( echo $check4 | awk  '{print $1}')
+		str_to_find_on_wan_side="P-t-P:"$check1"."$check2"."$check3"."$check4
+
+		ppa_echo ""
+		ppa_echo "string_to_find_on_wan_side:   $str_to_find_on_wan_side"
+		ppp=$unset
+	fi
+	check_ppp=$(echo $line | grep "ppp")
+	if [ "$check_ppp" != "" ];then
+		ppp=$set
+		ppa_echo "ppp set $ppp"		
+	fi
+}
+
+generate_set_ipv6_ppp_rout_wan_side_script_l2tp()
+{
+	ip_address=$4
+	ipv6_subnetmask=$3
+	Gate_way_address=$2
+	ipflag=$1
+	
+	rm $wan_route_ipv6
+	echo "set_string_back_up=\"\""	>> $wan_route_ipv6
+	echo "set=1" >> $wan_route_ipv6
+	echo "unset=0" >> $wan_route_ipv6
+	echo "ppp=\$unset" >> $wan_route_ipv6
+	echo "str_to_find_on_wan_side=\"$str_to_find_on_wan_side\"" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "set_ppp_rout_wan_side_script()" >> $wan_route_ipv6
+	echo "{" >> $wan_route_ipv6
+	echo "line=\"\$@\"" >> $wan_route_ipv6	
+	echo "if [ \$ppp -eq \$set ];then" >> $wan_route_ipv6
+	echo "echo \"CPE side PPP settings :\$line\"" >> $wan_route_ipv6
+	echo "check=\$(echo \$line | grep \"\$str_to_find_on_wan_side\")" >> $wan_route_ipv6
+	echo "if [ \"\$check\" != \"\" ];then" >> $wan_route_ipv6
+	echo "ppp_wan_interface=\$( echo \$set_string_back_up | awk  '{print \$1}')" >> $wan_route_ipv6
+	echo "echo \"wan ppp interface = \$ppp_wan_interface\"" >> $wan_route_ipv6
+	echo "ppp=\$unset" >> $wan_route_ipv6
+	echo "else" >> $wan_route_ipv6
+	echo "ppp=\$unset" >> $wan_route_ipv6
+	echo "fi" >> $wan_route_ipv6
+	echo "fi" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "check_ppp=\$(echo \$line | grep \"ppp\")" >> $wan_route_ipv6
+	echo "if [ \"\$check_ppp\" != \"\" ];then" >> $wan_route_ipv6
+	echo "ppp=\$set" >> $wan_route_ipv6
+	echo "set_string_back_up=\$check_ppp" >> $wan_route_ipv6
+	echo "fi" >> $wan_route_ipv6
+	echo "}" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6
+	echo "rm $wan_side_ifconfig_info_file" >> $wan_route_ipv6
+	echo "ifconfig > $wan_side_ifconfig_info_file" >> $wan_route_ipv6	
+	echo "FILE=\"$wan_side_ifconfig_info_file\"" >> $wan_route_ipv6
+	echo "BAKIFS=\$IFS" >> $wan_route_ipv6
+	echo "exec 3<&0" >> $wan_route_ipv6
+	echo "exec 0<\"\$FILE\"" >> $wan_route_ipv6
+	echo "while read -r line" >> $wan_route_ipv6
+	echo "do" >> $wan_route_ipv6
+	echo "set_ppp_rout_wan_side_script \$line" >> $wan_route_ipv6
+	echo "done" >> $wan_route_ipv6
+	echo "exec 0<&3" >> $wan_route_ipv6
+	echo "IFS=\$BAKIFS" >> $wan_route_ipv6
+	echo "" >> $wan_route_ipv6 
+
+	check=$(echo $ipflag | grep "IPV6")
+	if [ "$check" != "" ];then
+		echo "ip -6 addr add $ip_address/$ipv6_subnetmask dev \$ppp_wan_interface" >> $wan_route_ipv6
+		echo "#sleep 1" >> $wan_route_ipv6 
+		echo "ip -6 route add $Gate_way_address dev \$ppp_wan_interface" >> $wan_route_ipv6
+		echo "" >> $wan_route_ipv6 
+	fi
+	
+	check=$(echo $ipflag | grep "IPV4")
+	if [ "$check" != "" ];then
+		echo "ip route add $Gate_way_address dev \$ppp_wan_interface" >> $wan_route_ipv6
+		echo "" >> $wan_route_ipv6 
+	fi
+
+	check=$(echo $ipflag | grep "IPV4_PPP")
+	if [ "$check" != "" ];then
+		echo "ip addr add $ip_address/32 dev \$ppp_wan_interface" >> $wan_route_ipv6
+		echo "#sleep 1" >> $wan_route_ipv6 
+		echo "ip route add $Gate_way_address dev \$ppp_wan_interface" >> $wan_route_ipv6
+		echo "" >> $wan_route_ipv6 
+	fi
+
+	echo "exit 0" >> $wan_route_ipv6
+}
+
+get_dynamic_ppp_interfacename_and_set_route_wan_l2tp()
+{
+	ip_address=$4
+	ipv6_subnetmask=$3
+	Gate_way_address=$2
+	ipflag=$1
+	check_ppp_interface_up
+	touch $local_ifconfig_info_file
+	ppp=$unset
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "rm $tmp_cpe_ifconfig_info_file"	
+	cat_mib_cmd="ifconfig > $tmp_cpe_ifconfig_info_file"
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s "$cat_mib_cmd" -d $local_ifconfig_info_file
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s $tmp_cpe_ifconfig_info_file -d $local_ifconfig_info_file
+
+	echo "ifconfig info........................"
+	#cat $local_ifconfig_info_file | grep -A 8 ppp
+
+
+	FILE=$local_ifconfig_info_file
+	BAKIFS=$IFS
+	exec 3<&0
+	exec 0<"$FILE"
+	colum=$set;
+	while read -r line
+	do
+		find_ppp_interface_cpe_side_ipv6_l2tp $line
+	done
+	exec 0<&3
+	IFS=$BAKIFS
+	
+	generate_set_ipv6_ppp_rout_wan_side_script_l2tp $ipflag $Gate_way_address $ipv6_subnetmask $ip_address 
+
+	ifconfig $ppa_auto_if_wan promisc	
+        ifconfig $ppa_auto_if_wan up
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "rm -f $wan_side_ifconfig_info_file" -g $ppa_auto_debug	
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "rm -f $wan_side_route_ipv6_file" -g $ppa_auto_debug
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c put -s $wan_route_ipv6   -d $wan_side_tmp_folder -g $ppa_auto_debug
+	
+	$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c run -s $wan_side_route_ipv6_file -g $ppa_auto_debug
+
+
+	cat $local_ifconfig_info_file | grep -A 8 ppp
+
+	rm $local_ifconfig_info_file	
+}
+
+
+#***********************************[ COMMON API ]************************************#
+#***********************************[ COMMON API ]************************************#
+#***********************************[ COMMON API ]************************************#
+
+
+#These function is used in all platform init scripts[Top level automation script] for uboot environment setting [to extract addmisc paramenters,modify it and set to the board /Uboot file name] Note:This function will be moved to different file later.
+
+
+uboot_data_extract()
+{
+	if [ -f "$uboot_data" ]; then
+		FILE=$uboot_data
+		BAKIFS=$IFS
+		exec 3<&0
+		exec 0<"$FILE"
+		while read -r line
+		do
+			check=$(echo $line | grep "u-boot=")
+			if [ "$check" != "" ];
+			then
+				split_content=$(echo $line | sed -e "s/u-boot=//g" )
+				split_content=$(echo $split_content | sed -e "s/\n//g" )
+				split_content=$(echo $split_content | sed -e "s/\r//g" )
+
+				uboot_file_name=$split_content
+			fi
+		done
+	fi	
+}
+
+
+uboot_nand_data_extract()
+{
+	echo ""
+}
+
+
+addmisc_extract()
+{
+	if [ -f "$addmisc_extract_data" ]; then
+		FILE=$addmisc_extract_data
+		BAKIFS=$IFS
+		exec 3<&0
+		exec 0<"$FILE"
+		while read -r line
+		do
+			check=$(echo $line | grep "addmisc=")
+			if [ "$check" != "" ];
+			then
+				split_content=$(echo $line | sed -e "s/addmisc=//g" )
+				split_content=$(echo $split_content | sed -e "s/\n//g" )
+				split_content=$(echo $split_content | sed -e "s/\r//g" )
+
+				check=$(echo $split_content | grep "ethwan=")     #E
+				if [ "$check" == "" ];
+				then
+				split_content="$split_content ethwan=\$(ethwan)"
+				fi
+
+				check=$(echo $split_content | grep "param_en=")   #P
+				if [ "$check" == "" ];
+				then
+				split_content="$split_content param_en=\$(param_en)"
+				fi
+
+				check=$(echo $split_content | grep "ipv6_acc_en=") #I
+				if [ "$check" == "" ];
+				then
+				split_content="$split_content ipv6_acc_en=\$(ipv6_acc_en)"
+				fi
+
+				check=$(echo $split_content | grep "wanqos_en=")   #Q
+				if [ "$check" == "" ];
+				then
+				split_content="$split_content wanqos_en=\$(wanqos_en)"
+				fi
+
+#				check=$(echo $split_content | grep "wanitf=")     #W
+#				if [ "$check" == "" ];
+#				then
+#				split_content="$split_content wanitf=\$(wanitf)"
+#				fi
+
+				echo "Setting addmisc data via $SERIAL (function addmisc_extract : ppa_auto_env)" 
+				
+				echo "set update_rootfs" 
+				echo "set update_rootfs" > $SERIAL #work around to free some memory in u-boot env buffer 
+				
+				echo "set update_firmware"
+				echo "set update_firmware" > $SERIAL #work around to free some memory in u-boot env buffer
+				
+				echo "set addmisc '$split_content'" 
+				echo "set addmisc '$split_content'" > $SERIAL 
+				
+			fi
+		done
+		exec 0<&3
+		IFS=$BAKIFS
+	else
+		echo ""
+		echo "addmisc parameters not set"
+		echo ""
+	fi
+}
+
+
+untag_hp_2650_switch_port_pppoe()
+{
+#This function is a work around for non-vlan pppoe testcases only : This function will be called in cpe_init_script of pppoe testcase for non-vlan setup--to makesure the hp 2650 ports are untagged before calling pppd [This function works only for D version - For other version it is a dummy call]
+
+	check=$(echo $cpe_wan_if | grep "ppp")
+	if [ "$check" != "" ];
+	then
+		echo "" #dummmy: reserved for later use
+	fi
+}
+
+tag_hp_2650_switch_port_pppoe()
+{
+#This function is a work around for vlan pppoe testcases only : This function will be called in cpe_init_script of pppoe testcase for vlan setup--to makesure the hp 2650 ports are tagged before calling pppd [This function works only for D version - For other version it is a dummy call]
+
+	check=$(echo $cpe_wan_if | grep "ppp")
+	if [ "$check" != "" ];
+	then
+		echo "" #dummmy: reserved for later use
+	fi
+}
+
+decimal_to_hexdecimal()
+{
+	hex="0"	
+	HEX_DIGITS="0123456789ABCDEF"  
+	dec_value=$1
+	hex_value=""  
+	until [ $dec_value -eq $zero ]; do 
+		rem_value=$((dec_value % 16))     
+		dec_value=$((dec_value / 16))    
+		hex_digit=$(echo $HEX_DIGITS | cut -b `expr $rem_value + 1`)
+		hex_value="${hex_digit}${hex_value}"  
+	done  
+		hex=$hex_value
+		
+}
+
+generate_ipv4_address_based_on_session()
+{
+	ipv4_ip_address=$1
+
+	check=$( echo $ipv4_ip_address | awk -F[..] '{print $1}')
+	part1=$check
+	check=$( echo $ipv4_ip_address | awk -F[..] '{print $3}')
+	part3=$check
+	check=$( echo $ipv4_ip_address | awk -F[..] '{print $4}')
+	part4=$check
+
+	Ipv4_address_based_on_session=$part1"."$ppa_auto_name"."$part3"."$part4
+	ppa_echo "Ipv4_address set to : $Ipv4_address_based_on_session by converting ipv4 address $ipv4_ip_address [convertion based on session No]"
+}
+
+generate_ipv6_address()
+{
+
+ipv4_ip_address=$1
+ipv6_part_address=$2
+
+
+if [ "$ipv6_part_address" == "$ipv6_wan_part_address_6rd" ]
+then
+	Ipv6_address_part1=$ipv6_part_address":"$ppa_auto_name
+
+elif [ "$ipv6_part_address" == "$ipv6_wan_part_address_dslite" ]
+then
+	Ipv6_address_part1=$ipv6_part_address":"$ppa_auto_name
+else
+	check=$( echo $ipv4_ip_address | awk -F[..] '{print $1}')
+	if [ $check -lt $num ]
+	then 
+		decimal_to_hexdecimal $check 
+		part1=$hex
+		part1="0"$part1
+	else
+		decimal_to_hexdecimal $check 
+		part1=$hex
+	fi
+
+	check=$( echo $ipv4_ip_address | awk -F[..] '{print $2}')
+	if [ $check -lt $num ]
+	then 
+		decimal_to_hexdecimal $check 
+		part2=$hex
+		part2="0"$part2
+	else
+		decimal_to_hexdecimal $check 
+		part2=$hex
+	fi
+
+	Ipv6_address_part1=$ipv6_part_address":"$part1$part2
+fi
+
+	check=$( echo $ipv4_ip_address | awk -F[..] '{print $3}')
+	if [ $check -lt $num ]
+	then 
+		decimal_to_hexdecimal $check 
+		part3=$hex
+		part3="0"$part3
+	else
+		decimal_to_hexdecimal $check 
+		part3=$hex
+	fi
+
+	check=$( echo $ipv4_ip_address | awk -F[..] '{print $4}')
+	if [ $check -lt $num ]
+	then 
+		decimal_to_hexdecimal $check 
+		part4=$hex
+		part4="0"$part4
+	else
+		decimal_to_hexdecimal $check 
+		part4=$hex
+	fi
+
+	Ipv6_address=$Ipv6_address_part1":"$part3":"$part4
+
+	ppa_echo "Ipv6_address set to : $Ipv6_address by converting ipv4 address $ipv4_ip_address"
+return
+}
+
+
+#first ip will be used by CPE LAN port, seconds one will be used by LAN side PC 
+part_subnet="0"
+get_first_three_ip()
+{ #$1 is the input parameter, like 192.168.10.0, then it will set 192.168.10. to par_subnet
+    local len=0
+    local index=0;
+    tmp_ip=$1
+    for i in 1 2 3
+    do
+	index=`expr index "$tmp_ip" .`
+	len=`expr ${len} + ${index}`
+	index=`expr $index + 1`
+	tmp_ip=`expr substr $tmp_ip $index 20`
+    done      
+    part_subnet=`expr substr $1 1 $len`
+}
+
+
+#auto create cpe lan interface ip address
+get_cpe_lan_ip()
+{ 
+	local tmp=0; 
+	tmp=`expr ${ppa_auto_name} \* ${LAN_MAX_IP_NUM} + ${LAN_IP_OFFSET}`;
+	check_ip=$(echo $1 | grep ":")
+	if [ "$check_ip" != "" ];then
+	        tmp_cpe_lan_ip="$1$tmp"
+		ppa_echo "cpe_lan_ip :Ipv6_address set to : $tmp_cpe_lan_ip"
+	else	
+		get_first_three_ip $1 
+		tmp_cpe_lan_ip=$part_subnet$tmp
+		ppa_echo "cpe_lan_ip :Ipv4_address set to : $tmp_cpe_lan_ip"
+	fi		
+}
+
+#auto create lan pc interface ip address
+get_lan_ip_route_mode()
+{ 
+	local tmp=0;  
+	tmp=`expr ${ppa_auto_name} \* ${LAN_MAX_IP_NUM} + ${LAN_IP_OFFSET} + 1`;
+	check_ip=$(echo $1 | grep ":")
+	if [ "$check_ip" != "" ];then
+	        tmp_lan_ip_route_mode="$1$tmp"
+		ppa_echo "lan_ip_route_mode :Ipv6_address set to : $tmp_lan_ip_route_mode"
+	else	
+		get_first_three_ip $1 
+		tmp_lan_ip_route_mode=$part_subnet$tmp
+		ppa_echo "lan_ip_route_mode :Ipv4_address set to : $tmp_lan_ip_route_mode"
+	fi		
+}
+
+get_lan2_ip_route_mode()
+{ 
+	local tmp=0;  
+	tmp=`expr ${ppa_auto_name} \* ${LAN_MAX_IP_NUM} + ${LAN_IP_OFFSET} + 2`;
+	check_ip=$(echo $1 | grep ":")
+	if [ "$check_ip" != "" ];then
+	        tmp_lan_ip_route_mode="$1$tmp"
+		ppa_echo "lan_ip_route_mode :Ipv6_address set to : $tmp_lan_ip_route_mode"
+	else	
+		get_first_three_ip $1 
+		tmp_lan_ip_route_mode=$part_subnet$tmp
+		ppa_echo "lan_ip_route_mode :Ipv4_address set to : $tmp_lan_ip_route_mode"
+	fi		
+}
+
+#auto create lan pc interface ip address
+get_lan_ip_bridge_mode()
+{ 
+	local tmp=0;  
+	tmp=`expr ${ppa_auto_name} \* ${WAN_MAX_IP_NUM} + ${WAN_IP_OFFSET} + 1`;
+	check_ip=$(echo $1 | grep ":")
+	if [ "$check_ip" != "" ];then
+	        tmp_lan_ip_bridge_mode="$1$tmp"
+		ppa_echo "lan_ip_bridge_mode :Ipv6_address set to : $tmp_lan_ip_bridge_mode"
+	else	
+		get_first_three_ip $1 
+		tmp_lan_ip_bridge_mode=$part_subnet$tmp
+		ppa_echo "lan_ip_bridge_mode :Ipv4_address set to : $tmp_lan_ip_bridge_mode"
+	fi		
+}
+
+#auto create cpe wan interface ip address
+get_cpe_wan_ip() 
+{ 
+	local tmp=0;
+	tmp=`expr ${ppa_auto_name} \* ${WAN_MAX_IP_NUM} + ${LAN_IP_OFFSET}`;
+	check_ip=$(echo $1 | grep ":")
+	if [ "$check_ip" != "" ];then
+	        tmp_cpe_wan_ip="$1$tmp"
+		ppa_echo "cpe_wan_ip :Ipv6_address set to : $tmp_cpe_wan_ip"
+	else	
+		get_first_three_ip $1 
+		tmp_cpe_wan_ip=$part_subnet$tmp
+		ppa_echo "cpe_wan_ip :Ipv4_address set to : $tmp_cpe_wan_ip"
+	fi		
+}
+
+get_cpe_wan2_ip()
+{ 
+	local tmp=0;
+	tmp=`expr ${ppa_auto_name} \* ${WAN_MAX_IP_NUM} + ${LAN_IP_OFFSET} + 1`;
+	check_ip=$(echo $1 | grep ":")
+	if [ "$check_ip" != "" ];then
+	        tmp_cpe_wan_ip="$1$tmp"
+		ppa_echo "cpe_wan_ip :Ipv6_address set to : $tmp_cpe_wan_ip"
+	else	
+		get_first_three_ip $1 
+		tmp_cpe_wan_ip=$part_subnet$tmp
+		ppa_echo "cpe_wan_ip :Ipv4_address set to : $tmp_cpe_wan_ip"
+	fi		
+}
+
+#auto create cpe wan interface's gateway. Note we already set first ip to gateway ip address
+get_cpe_gw_ip()
+{     
+	local tmp=1;
+	check_ip=$(echo $1 | grep ":")
+	if [ "$check_ip" != "" ];then
+	        tmp_cpe_gw_ip="$1$tmp"
+		ppa_echo "cpe_gw_ip :Ipv6_address set to : $tmp_cpe_gw_ip"
+	else	
+		get_first_three_ip $1 
+		tmp_cpe_gw_ip=$part_subnet$tmp
+		ppa_echo "cpe_gw_ip :Ipv4_address set to : $tmp_cpe_gw_ip"
+	fi		
+}
+
+#auto create cpe wan interface's gateway. Note we already set first ip to gateway ip address
+get_cpe_gw2_ip()
+{
+	local tmp=2;
+	check_ip=$(echo $1 | grep ":")
+	if [ "$check_ip" != "" ];then
+	        tmp_cpe_gw_ip="$1$tmp"
+		ppa_echo "cpe_gw_ip :Ipv6_address set to : $tmp_cpe_gw_ip"
+	else	
+		get_first_three_ip $1 
+		tmp_cpe_gw_ip=$part_subnet$tmp
+		ppa_echo "cpe_gw_ip :Ipv4_address set to : $tmp_cpe_gw_ip"
+	fi		
+}
+
+get_cpe_gw_ppp_ip()
+{ 
+	local tmp=2;
+	check_ip=$(echo $1 | grep ":")
+	if [ "$check_ip" != "" ];then
+	        tmp_cpe_gw_ppp_ip="$1$tmp"
+		ppa_echo "cpe_gw_ppp_ip :Ipv6_address set to : $tmp_cpe_gw_ppp_ip"
+	else	
+		get_first_three_ip $1 
+		tmp_cpe_gw_ppp_ip=$part_subnet$tmp
+		ppa_echo "cpe_gw_ip :Ipv4_address set to : $tmp_cpe_gw_ppp_ip"
+	fi		
+}
+
+generate_ip_for_spirent()
+{
+	Spirent_ip=""	
+	ip=$1
+	check=$( echo $ip | awk -F[..] '{print $1}')
+	part1=$check
+	check=$( echo $ip | awk -F[..] '{print $2}')
+	part2=`expr $ppa_auto_name + $check`
+	check=$( echo $ip | awk -F[..] '{print $3}')
+	part3=`expr $ppa_auto_name + $check`
+	check=$( echo $ip | awk -F[..] '{print $4}')
+	part4=`expr $ppa_auto_name + $check`
+	Spirent_ip=$part1.$part2.$part3.$part4
+}
+
+generate_ip_for_spirent_ipv6()
+{
+	Spirent_ip=""	
+	ip=$1
+	check=$( echo $ip | awk -F[.:] '{print $1}')
+	part1=`expr $ppa_auto_name + $check`
+	check=$( echo $ip | awk -F[.:] '{print $4}')
+	part4=$check
+	check=$( echo $ip | awk -F[.:] '{print $5}')
+	part5=$check
+	Spirent_ip="$part1::$ppa_auto_name:$part4:$part5"
+}
+
+test_api()
+{
+echo ""
+echo "Test for ipv4 address generation"
+echo ""
+
+	   #Test API
+	    get_cpe_lan_ip "192.168.1.0"
+	    echo "tmp_cpe_lan_ip=$tmp_cpe_lan_ip"
+	
+	    get_lan_ip_route_mode "192.168.1.1"
+	    echo "tmp_lan_ip=$tmp_lan_ip_route_mode"
+
+	    get_cpe_wan_ip "192.168.0.0"
+	    echo "tmp_cpe_wan_ip=$tmp_cpe_wan_ip"
+
+	    get_cpe_gw_ip "192.168.0.0"
+	    echo "tmp_cpe_gw_ip=$tmp_cpe_gw_ip"   
+
+	    get_lan_ip_bridge_mode "192.168.0.0"
+	    echo "tmp_lan_ip_bridge_mode=$tmp_lan_ip_bridge_mode"
+
+echo ""
+echo "Test for ipv6 address generation"
+echo ""
+
+	    get_cpe_lan_ip "192.168.1.0" $ipv6
+	    echo "tmp_cpe_lan_ip=$tmp_cpe_lan_ip"
+
+	    get_lan_ip_route_mode "192.168.1.1" $ipv6
+	    echo "tmp_lan_ip=$tmp_lan_ip_route_mode"
+
+	    get_cpe_wan_ip "192.168.0.0" $ipv6
+	    echo "tmp_cpe_wan_ip=$tmp_cpe_wan_ip"
+
+	    get_cpe_gw_ip "192.168.0.0" $ipv6
+	    echo "tmp_cpe_gw_ip=$tmp_cpe_gw_ip"   
+
+	    get_lan_ip_bridge_mode "192.168.0.0" $ipv6
+	    echo "tmp_lan_ip_bridge_mode=$tmp_lan_ip_bridge_mode"
+}
+
+#in order to avoid mac address conflicts, here reset lan/wan mac address
+#first  parameter: interface name
+#second parameter: global unit, must be unique
+
+#$1: lan mac index
+tmp_mac=""; export tmp_mac
+get_lan_mac()
+{
+   tmp_mac=`printf "02:00:00:00:%02x:%02x" $ppa_auto_name $2`
+}
+
+get_wan_mac()
+{
+   tmp_mac=`printf "02:01:01:01:%02x:%02x" $ppa_auto_name $2`
+}
+
+get_br_mac()
+{
+   tmp_mac=`printf "02:02:02:02:%02x:%02x" $ppa_auto_name $2`
+}
+
+reset_physical_lan_mac()
+{
+       get_lan_mac 
+       new_mac=$tmp_mac
+       echo "$1 new mac set to $new_mac" > /dev/console
+       ifconfig $1 down
+       ifconfig $1 hw ether $new_mac
+       ifconfig $1 up
+}
+
+#first  parameter: interface name, like eth1
+#second parameter: global unit, must be unique, 
+reset_physical_wan_mac()
+{
+       get_wan_mac 
+       new_mac=$tmp_mac
+       echo "$1 new mac set to $new_mac" > /dev/console
+       ifconfig $1 down
+       ifconfig $1 hw ether $new_mac
+       ifconfig $1 up
+}
+
+
+#first  parameter: bridge interface name like br0
+#second parameter: index to generate mac address
+set_br_mac_up()
+{
+check_ugw=""
+	check_ugw=$( version.sh | grep "UGW" )
+	if [ -n "$check_ugw" ]
+	then
+		check_version_no_1=$( version.sh | grep "5\.1" )
+		check_version_no_2=$( version.sh | grep "4\." )
+		if [ $check_version_no_1 != "" ] || [ $check_version_no_2 != "" ]
+		then
+			echo "" #do nothing :Reserved -> if to do somthing in future
+		else
+		       get_br_mac 
+                       new_mac=$tmp_mac
+		       echo "$1 new mac set to $new_mac" > /dev/console
+		       ifconfig $1 down
+		       ifconfig $1 hw ether $new_mac
+		       ifconfig $1 up
+		fi
+	fi
+}
+
+start_firewall_flush()
+{
+	#Flush all rules
+	iptables -t nat -F
+	iptables -t mangle -F
+	iptables -t filter -F
+	iptables -F
+
+
+	#Delete all the Chains
+	iptables -t nat -X
+	iptables -t mangle -X
+	iptables -t filter -X
+	iptables -X
+
+	#Make the default policy as ACCEPT
+
+	#Filter Table
+	iptables -t filter -P INPUT  ACCEPT
+	iptables -t filter -P FORWARD  ACCEPT
+	iptables -t filter -P OUTPUT  ACCEPT
+
+	#NAT Table
+	iptables -t nat -P PREROUTING  ACCEPT
+	iptables -t nat -P POSTROUTING  ACCEPT
+	iptables -t nat -P OUTPUT ACCEPT
+
+
+	#Mangle Table
+	iptables -t mangle -P PREROUTING  ACCEPT
+	iptables -t mangle -P INPUT ACCEPT
+	iptables -t mangle -P FORWARD ACCEPT
+	iptables -t mangle -P OUTPUT ACCEPT
+	iptables -t mangle -P POSTROUTING ACCEPT
+	
+	# Add a rule to mark TCP sessions for LRO
+	 iptables -t mangle -A INPUT -p tcp -m state --state ESTABLISHED -j EXTMARK --set-mark 0x80000000/0x80000000
+	ebtables -F
+	killall -9 pppd udhcpc  dhcp6c > /dev/null 2>&1
+    #kill below task which will reset qos values
+    killall -9 qos_rate_update > /dev/null 2>&1
+         
+        #enable ipv6
+	echo 1 > /proc/sys/net/ipv4/ip_forward
+	echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal
+        echo 0 > /proc/sys/net/ipv6/conf/all/disable_ipv6
+        echo 8 > /proc/sys/kernel/printk
+
+
+	check=`ppacmd getversion | grep "$MIX_MODE"`
+	if [ "$check" == "" ];then
+		ppa_echo "Not Mixed Mode"
+	        [ -f /proc/eth/ewan ] && echo P5 > /proc/eth/ewan
+	fi
+
+        #reset-lan-wan mac address
+        #reset_physical_lan_mac $phy_lan_ifname0 0
+        reset_physical_wan_mac $phy_wan_ifname0 0
+}
+
+start_firewall_enable() 
+{
+	check=$(echo $version_check | grep "e4")
+	if [ "$check" != "" ];then
+		echo "Fire Wall Not Enabled for E4 Amazon SE"
+		echo ""
+	else
+		echo "Fire Wall Enabled"
+		iptables -t filter -A FORWARD -j DROP
+	fi
+}
+
+start_dsl_atm()
+{  
+   echo ""
+   ifconfig $phy_wan_ifname0 0.0.0.0 
+}
+
+
+check_for_already_exiting_nas_interface_in_cpe()
+{
+	touch $tmp_cpe_ifconfig_info_file
+	ifconfig > $tmp_cpe_ifconfig_info_file
+
+	FILE=$tmp_cpe_ifconfig_info_file
+	BAKIFS=$IFS
+	exec 3<&0
+	exec 0<"$FILE"
+	while read -r line
+	do
+		nas_check=$(echo $line | grep "nas")
+		if [ "$nas_check" != "" ];then
+			NAS_SET=1
+		fi
+	done
+	exec 0<&3
+	IFS=$BAKIFS
+	rm $tmp_cpe_ifconfig_info_file
+}
+
+remove_loopeth()
+{ #$1: device name without unit, like loopeth
+  #$2: unit
+
+    if [ -d /proc/loopeth/ ] ; then
+	  loopeth_device_unit=$2;
+	  loopeth_device_name="$1""$2"
+      
+          ppa_echo "start remove_loopeth"
+	  ppa_echo "loopeth_device_name=$loopeth_device_name"
+	  ppacmd control --disable-lan  --disable-wan
+          ifconfig loopeth_device_name down     
+	  ppacmd dellan -i $loopeth_device_name
+          exist_f=$(cat /proc/loopeth/directpath | grep "ifid" | grep "${loopeth_device_name}")
+          ppa_echo "exist_f=$exist_f in /proc/loopeth/directpath"
+          if [ "$exist_f" != "" ]; then
+             echo unregister $loopeth_device_name  > /proc/loopeth/directpath
+             echo unregister $loopeth_device_name done > /dev/console  
+          fi
+	  #ppa_sleep 1
+          exist_f=$(cat /proc/loopeth/dev | grep "${loopeth_device_name}")
+          ppa_echo "exist_f=$exist_f in /proc/loopeth/dev"
+	  if [ "$exist_f" != "" ]; then
+                echo del $loopeth_device_name > /proc/loopeth/dev 
+                echo remove loopeth done > /dev/console  
+	  fi
+          #cat  /proc/loopeth/dev > /dev/console      
+          ppa_echo end remove_loopeth 
+    fi
+}
+
+#usage: 
+#  first parameter: cpe wan interface's name, like eth1.2, ppp0 and so on
+# seond parameter: wan server's physical interface name
+tmp_wanserver_if="";   export tmp_wanserver_if
+get_wanserver_if_via_cpe_wanif()
+{
+   local cpe_wan_if=$1
+   tmp_wanserver_if=$2
+
+   if [[ $cpe_wan_if =~ "ppp" ]]; then
+      tmp_wanserver_if="ppp"
+   elif [[ $cpe_wan_if =~ "." ]]; then      
+	  arr=$(echo $cpe_wan_if | tr "\." "\n") 
+	  i=0
+   	  for x in $arr 
+		do 
+			if [ $i -eq 1 ]; then 			   
+			   tmp_wanserver_if=${tmp_wanserver_if}.$x
+			elif [ $i -eq 2 ]; then
+               second_vlan=$x;
+			   tmp_wanserver_if=${tmp_wanserver_if}.$x
+			fi
+			i=$(($i + 1)) 
+	    done    
+   fi
+   #echo $tmp_wanserver_if    
+}
+
+br2684_sleep_between_kill_create=7;
+sleep_bt_br2684_ifconfig_up=3;
+last_br2684_protocol=""
+br2684_param_file_last=$tmp_cpe_path/ppa_auto_br2684;
+start_br2684()
+{ 
+	#$1: 0 - Routed, 1 - Bridged (Default)
+	#$2: nas index
+	#$3: 0 - LLC/SNAP (Default), 1 - VCMux  
+	#$4: queue type
+		#ATM_QOS="UBR,aal5:"
+		#ATM_QOS="UBR,aal5:max_pcr=1250,cdv=100"
+		#ATM_QOS="CBR,aal5:min_pcr=1250,cdv=100"
+		#ATM_QOS="NRT-VBR,aal5:max_pcr=1250,cdv=100,min_pcr=1000,scr=1100,mbs=1000" 
+		#ATM_QOS="RT-VBR,aal5:max_pcr=1250,cdv=100,scr=1100,mbs=1000"   
+		#ATM_QOS="UBR+,aal5:max_pcr=1250,cdv=100,min_pcr=1000"  
+	#$5: pvc            
+    
+    if [ "$5" == "0." ]; then 
+          echo ""
+          echo "------- Why pvc value is blank, its format should be like 0.0.33 "
+          echo " "
+    fi    
+    if [ $2 -eq 8 ] ; then
+         echo "why ATM PVC($2) is not in pre-defined list (0.0.33/34/35/36/37/38/39/40) as defined in API get_nas_index(...)"
+         echo ""
+    fi
+    
+	
+  local MAC_ADDR="00:E0:92:31:31:3A"	
+  local wan_itf_exit_flag=1; 
+  local flag;
+    
+  #workaround to remove loop eth device for direct path test
+  remove_loopeth "loopeth" "0"
+  ppa_echo phy_wan_ifname0=$phy_wan_ifname0 in start_br2684 ....
+  
+  check=$(echo $phy_wan_ifname0 | grep "${atm_wan_name}")
+  if [ "$check" != "" ];then
+	ppa_echo "Calling start_br2684 phy_wan_ifname0 = $phy_wan_ifname0"				
+				
+	killall -9 pppd udhcpc  dhcp6c > /dev/null 2>&1
+	flag=`ifconfig -a | grep "${phy_wan_ifname0}"`
+	ppa_echo "flag=$flag and phy_wan_ifname0=${phy_wan_ifname0}"
+	[[ "$flag" == "" ]] && wan_itf_exit_flag=0 && ppa_echo "wan_itf_exit_flag=$wan_itf_exit_flag"
+	[[ $wan_itf_exit_flag -gt 0 ]] && ifconfig $phy_wan_ifname0 down  
+    	
+	ppacmd delwan -i $phy_wan_ifname0
+	ppacmd dellan -i $phy_wan_ifname0
+
+	#note, since br2684 will crash during kill and re-creating nas interface.
+	#here we try to minimize the times to kill and re-create times.
+	#if last br2684 parameter is same with current one, then we just re-use the current nas interface 
+	#without killing and re-creating the nas interface.  
+	br2684_param_current="$1_$2_$3_$4_$5";  
+	echo br2684_param_current=$br2684_param_current
+	local last_pvc_filename=${br2684_param_file_last}_$2
+	if [ -e ${last_pvc_filename} ]; then
+		br2684_param_last=`cat ${last_pvc_filename}`;
+	else
+		br2684_param_last=""
+	fi
+		
+	if [ "$br2684_param_current" != "$br2684_param_last" ]; then
+	    [[ "$br2684_param_last" != "" ]] && echo "Why need re-create again ????" > /dev/console
+		echo "Need re-create nas interface for \"$br2684_param_current\" != \"$br2684_param_last\" "
+		if [ $wan_itf_exit_flag -gt 0 ]; then
+			ppa_echo "br2684ctl -k $2"
+            		ifconfig nas$2 down
+			br2684ctl -k $2
+			
+			echo sleep $br2684_sleep_between_kill_create
+			sleep $br2684_sleep_between_kill_create
+		fi 
+		
+		echo "br2684ctl -b -p $1 -c $2 -e $3 -q \"$4\" -a $5 "
+		br2684ctl -b -p $1 -c $2 -e $3 -q "$4" -a $5
+		echo "$br2684_param_current" > "${last_pvc_filename}"
+		NAS_SET=0
+
+		#Note, it is very important to have some sleep here. otherwise br2684 will crash in kernel
+		sleep $sleep_bt_br2684_ifconfig_up
+		echo  "ifconfig $phy_wan_ifname0 up"
+	else
+		echo "re-use current nas$2 for \"$br2684_param_current\" == \"$br2684_param_last\" "
+	fi
+
+	ifconfig $phy_wan_ifname0 up
+	reset_physical_wan_mac $phy_wan_ifname0 $2
+else
+
+	ppa_echo "Calling start_br2684 phy_wan_ifname0 = $phy_wan_ifname0"				
+	ppa_echo ""
+
+    #work around for phy negotiation. Sometimes, when CPE boot up, there is no WAN link, so down/up the interface
+	ifconfig $phy_wan_ifname0 up
+	ifconfig $phy_wan_ifname0 down
+	ifconfig $phy_wan_ifname0 up
+    reset_physical_wan_mac $phy_wan_ifname0 $2
+fi
+}
+
+stop_br2684()
+{ #$1 is the parameter for br2684
+
+echo "stop_br2684 is dummy API only" 
+return;
+
+check=$(echo $phy_wan_ifname0 | grep "nas")
+if [ "$check" != "" ];then
+	echo "Calling stop_br2684 phy_wan_ifname0 = $phy_wan_ifname0"				
+	#$1: nas index    
+    ppacmd delwan nas$1
+    ifconfig nas$1 down
+    killall -9 pppd udhcpc  dhcp6c > /dev/null 2>&1
+    sleep 1    
+    sleep $br2684_sleep_between_kill_create
+	br2684ctl -k $1
+    sleep $br2684_sleep_between_kill_create
+else
+	echo "Calling stop_br2684 phy_wan_ifname0 = $phy_wan_ifname0"				
+	echo ""	
+fi
+}
+
+start_pppoe()
+{ #$1: the base interface for pppoe to set up
+    #pppoecd $1 -d -u user -p user
+   ppp_unit=0;
+   ppp_user="user"
+   ppp_password="user"
+
+   pppd_lib_version=`ls /usr/lib/pppd` 
+
+   echo "linkname pppoe-$ppp_unit" > /etc/ppp/peers/pppoe$ppp_unit
+   echo "lcp-echo-interval 10" >> /etc/ppp/peers/pppoe$ppp_unit
+   echo "lcp-echo-failure 3" >> /etc/ppp/peers/pppoe$ppp_unit
+   echo "unit $ppp_unit" >> /etc/ppp/peers/pppoe$ppp$ppp_unit
+   echo "maxfail 0" >> /etc/ppp/peers/pppoe$ppp_unit
+   echo "usepeerdns" >> /etc/ppp/peers/pppoe$ppp_unit
+   echo "defaultroute" >> /etc/ppp/peers/pppoe$ppp_unit
+   echo "user $ppp_user" >> /etc/ppp/peers/pppoe$ppp_unit
+   echo "password $ppp_password" >> /etc/ppp/peers/pppoe$ppp_unit
+   echo "mtu 1492" >> /etc/ppp/peers/pppoe$ppp_unit
+   echo "persist" >> /etc/ppp/peers/pppoe$ppp_unit
+   echo "plugin /usr/lib/pppd/$pppd_lib_version/rp-pppoe.so" >> /etc/ppp/peers/pppoe$ppp_unit
+
+   echo $1 >> /etc/ppp/peers/pppoe$ppp_unit
+
+   echo "debug" >> /etc/ppp/peers/pppoe$ppp_unit
+
+   pppd call pppoe$ppp_unit
+}
+
+
+start_pppoa()
+{ #$1: pvc, for example: 0.35
+  #$2: mode: llc-encaps or vc-encaps
+  #br2684ctl -k 0.$1
+  sleep 1
+  ppp_unit=0;
+  pppoa_cfg_name="pppoa$ppp_unit"
+  pppoa_cfg_file="/etc/ppp/peers/$pppoa_cfg_name"; 
+  pppd_lib_version=`ls /usr/lib/pppd` 
+    
+  echo "plugin  /usr/lib/pppd/$pppd_lib_version/pppoatm.so " > $pppoa_cfg_file;  
+  echo "plugin  /usr/lib/pppd/$pppd_lib_version/rp-pppoe.so " >> $pppoa_cfg_file;  
+
+  echo "user test" >> $pppoa_cfg_file;
+  echo "password test" >> $pppoa_cfg_file;
+  echo "lcp-echo-interval 10" >> $pppoa_cfg_file;
+  echo "lcp-echo-failure 3" >> $pppoa_cfg_file;
+  echo "maxfail 0" >> $pppoa_cfg_file;
+  echo "updetach" >> $pppoa_cfg_file;
+  echo "debug" >> $pppoa_cfg_file;
+  echo "nodeflate" >> $pppoa_cfg_file;
+  echo "nobsdcomp" >> $pppoa_cfg_file;
+  echo "novj" >> $pppoa_cfg_file;
+  echo "novjccomp" >> $pppoa_cfg_file;
+  echo "defaultroute" >> $pppoa_cfg_file;
+  echo "usepeerdns" >> $pppoa_cfg_file;
+  echo "persist" >> $pppoa_cfg_file;
+  echo "holdoff 4" >> $pppoa_cfg_file;
+  echo "mtu 1400" >> $pppoa_cfg_file;
+  echo "qos UBR,aal5:max_pcr=0,min_pcr=0 " >> $pppoa_cfg_file;
+  echo "0.$1" >> $pppoa_cfg_file;
+  echo $2 >> $pppoa_cfg_file;
+
+  echo pppd call $pppoa_cfg_name
+  pppd call $pppoa_cfg_name
+}
+
+enable_sleep=0;
+
+ppa_sleep()
+{ #$1: the sleep time 
+  if [ $enable_sleep -gt 0 ]; then
+    if [ $1 -gt 0 ] ; then
+       sleep $1 
+    else
+       sleep 1
+    fi
+  fi
+}
+
+maximum_ping_num=5;
+ppa_ping()
+{  #$1: maximum ping times
+   #$2: server name or ip address
+[ $ping_enable -eq 0 ] && return
+
+   times=$1
+   [ $times -gt ${maximum_ping_num} ] && times=${maximum_ping_num};
+
+   echo -n "   ping -c 1 $2 "
+   while [ $times -gt 0 ] ; do
+      #sleep 1
+      #ping -c 1 $2 > /dev/null      
+      ping -c 1 $2 > /dev/console 
+      [ $? -eq 0 ]  && echo " ok" && return;
+      echo -n . 
+      times=$(($times-1));
+   done
+   echo "Ping waiting to debug"	
+   sleep 5 #1000000
+}
+
+ppa_ping6()
+{
+   #$1: maximum ping times
+   #$2: server name or ip address
+[ $ping_enable -eq 0 ] && return
+
+   times=$1
+   [ $times -gt ${maximum_ping_num} ] && times=${maximum_ping_num};
+   echo -n "   ping6 -c 1 $2 "
+   while [ $times -gt 0 ] ; do
+      #sleep 1
+      ping6 -c 1 $2 > /dev/null
+      [ $? -eq 0 ] && echo " ok" && return ;
+      echo -n .
+  
+      times=$(($times-1));
+   done
+   echo "waiting to debug"	
+   sleep 5 #1000000
+}
+
+ppa_auto_tool_wrapper()
+{  
+   [ -e $ppa_auto_tool_retcode_file ] && rm $ppa_auto_tool_retcode_file
+   #echo run ppa_auto_tool_wrapper: ${ppa_auto_tool_path} "$@"
+   ${ppa_auto_tool_path} "$@"
+   retcode=$? 
+   
+   #echo tool retcode=$retcode
+   [ ! $retcode -eq 0 ] && touch $ppa_auto_tool_retcode_file && echo "------ create file $ppa_auto_tool_retcode_file"
+      
+}
+
+run_command ()
+{
+  echo run command: "$@" at `pwd`
+  "$@"
+  retcode=$?
+  if [ "$retcode" -ne 0 ]; then
+    echo "run_command : following command failed with non-zero return code ($retcode)... exiting"
+    # the echo may not print 'quots' correctly, but the program is executing with right quotes
+    echo  "$@"
+    exit -1;
+  fi
+} 
+
+#For ssm=0
+enable_mc_asc()
+{  #In order to be compatible with PPA 2.8 multicast requriment, it needs to enable don't-care-source-ip feature
+   echo enable asc > /proc/eth/mccfg
+}
+
+#For ssm=1
+disable_mc_asc()
+{  #In order to be compatible with PPA 2.8 multicast requriment, it needs to enable care-source-ip feature
+   echo disable asc > /proc/eth/mccfg
+}
+
+tmp_escape_str=""; export tmp_escape_str
+#format sed string
+escape_sed_string()
+{
+   local MyString=$1
+   #echo len=${#MyString}
+   i=0
+   tmp_escape_str=""
+   while (( i++ < ${#MyString} ))
+   do
+      char=$(expr substr "$MyString" $i 1)
+      #echo "<$char>"
+      if [ "$char" == '/' ]; then
+         #echo found $char
+         tmp_escape_str="${tmp_escape_str}\/"
+      elif [ "$char" == '"' ]; then
+         #echo found double_quote
+         tmp_escape_str="${tmp_escape_str}\\\""
+      elif [ "$char" == "'" ]; then
+         #echo found double_quote
+         tmp_escape_str="${tmp_escape_str}\\\'"
+      else
+         tmp_escape_str="${tmp_escape_str}${char}"
+      fi
+   done
+}
+
+filesizecheck=sizeoffile_cpe.txt #temp file
+tmp_interface=$ppa_auto_if_cpe
+
+download_try_times=4
+download_verify_flag=0
+download_file()
+{
+	localpath=$1
+	cpepath=$2
+	execute_flag=$3
+	flag=1
+	sizeof_file_local=0;
+	sizeof_file_cpe=0;
+	wait_count=0;
+	cmd="rm $cpepath"
+	#$ppa_auto_tool -i $tmp_interface -n $ppa_auto_name -t cpe -c cmd -s "$cmd" -g $ppa_auto_debug 
+	
+	#echo "$ppa_auto_tool -i $tmp_interface -n $ppa_auto_name -t cpe -c put -s $localpath -d $cpepath"
+	$ppa_auto_tool -i $tmp_interface -n $ppa_auto_name -t cpe -c put -s $localpath -d $cpepath
+	[ $download_verify_flag -eq 0 ] && flag=0
+	if [ "$execute_flag" != "" ]; then
+	#echo "$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s $cpepath"
+	$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c cmd -s $cpepath 
+	fi	
+}
+
+
+upload_file()
+{ 
+mib_file=$1
+cat_mib_cmd=$2
+flag=1
+wait_count=0;
+
+	if [ -f $mib_file ]; then
+	    rm -d $mib_file
+	fi
+	while [ $flag ]
+	do
+		echo "Upload file to pc : retry count = $wait_count"
+		$ppa_auto_tool -i $tmp_interface -n $ppa_auto_name -t cpe -c cmd -s "$cat_mib_cmd  > $ppa_cpe_mib_cat_file" -d $mib_file  -g $ppa_auto_debug 
+		
+		$ppa_auto_tool -i $tmp_interface -n $ppa_auto_name -t cpe -c get -s $ppa_cpe_mib_cat_file -d $mib_file  -g $ppa_auto_debug
+		if [ -f "$mib_file" ] && [ -s "$mib_file" ];then
+			echo "file uplaoded to pc"
+			flag=0;
+			break;
+		fi
+		if [ $wait_count -lt 5 ];then
+				wait_count=`expr $wait_count + 1`;
+		else
+			break
+		fi
+	done
+}
+
+
+#Just for testing
+#test_api

@@ -1,0 +1,13 @@
+. ../../cfg/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if
+. /var/ppa_auto_env
+. /var/cpe_env
+
+ifconfig $cpe_wan_if0 down
+ifconfig $cpe_lan_if1 down
+
+vconfig rem $cpe_wan_if0
+vconfig rem $cpe_lan_if1
+
+

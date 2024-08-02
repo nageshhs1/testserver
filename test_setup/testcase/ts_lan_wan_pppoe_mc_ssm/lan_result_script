@@ -1,0 +1,94 @@
+#!/bin/sh
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+if [ -f $ppa_auto_local_mib_file ]; then
+    rm -d $ppa_auto_local_mib_file
+fi
+
+#Read tc mib counter from cpe via serial port
+cat_mib_cmd="cat /proc/mpe/tc_mib"
+$serialport_rw "$ppa_auto_local_mib_file" "$cat_mib_cmd"
+cat $ppa_auto_local_mib_file
+
+if [ ! -f $ppa_auto_pattern_res_lan ]; then
+    echo "why no pattern result file:$ppa_auto_pattern_res_lan"
+    report_quit $ppa_auto_result_unknown;
+fi
+
+
+if [ ! -f $ppa_auto_pattern_res_lan ]; then
+    echo "why no pattern result file:$$ppa_auto_pattern_res_lan"
+    report_quit $ppa_auto_result_unknown;
+fi
+
+#get its working session number
+. $ppa_auto_pattern_res_lan
+
+echo "ip_src_num=$ip_src_num"
+
+if [ -z $ip_src_num ]; then
+	echo "why packet_conn null"
+        report_quit $ppa_auto_result_fail;
+fi
+
+if [ $ip_src_num -eq 0 ]; then
+	report_quit $ppa_auto_result_fail
+fi
+
+
+echo "ip_dst_num=$ip_dst_num"
+
+if [ -z $ip_dst_num ]; then
+	echo "why packet_conn null"
+        report_quit $ppa_auto_result_fail;
+fi
+
+if [ $ip_dst_num -eq 0 ]; then
+	report_quit $ppa_auto_result_fail
+fi
+
+if [ ! -f $ppa_auto_local_mib_file ]; then 
+	echo "why no mib file: $ppa_auto_local_mib_file"
+        report_quit $ppa_auto_result_unknown
+fi
+
+
+#get_lan_wan_fast_udp 1
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_udp 0
+#echo $ppa_fast_pkt	
+#get_lan_wan_fast_tcp 1
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_tcp 0
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_mc 1
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_mc 0
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_br 1
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_br 0
+#echo $ppa_fast_pkt
+#exit 0
+Get_TC_Mib_Value
+lan_fast_pkt=$ppa_fast_pkt				
+wan_fast_pkt=$ppa_fast_pkt
+
+
+#note, for multicast packet, we only check from WAN to LAN
+if [ $wan_fast_pkt -gt $ppa_auto_mininal_pkt_mc ]; then
+		echo "$ppa_auto_result_ok"	
+		report_quit "$ppa_auto_result_ok"
+else
+                echo "$ppa_auto_result_fail:wan_fast_pkt=$wan_fast_pkt, but ppa_auto_mininal_pkt_mc=$ppa_auto_mininal_pkt_mc"  
+                report_quit $ppa_auto_result_fail
+fi

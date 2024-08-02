@@ -1,0 +1,27 @@
+#!/bin/sh
+
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if $phy_wan_ifname0
+. /var/ppa_auto_env
+. /var/cpe_env
+
+
+if [ $cpe_nat_enable -gt 0 ]; then 
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if -j MASQUERADE
+fi
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal  
+
+l2tpclient=$ppa_auto_name"_pppd"
+echo "$l2tpclient"
+sed -i s/"lac xxx_pppd"/"lac $l2tpclient"/g /tmp/xl2tpd/xl2tpd.conf
+echo "set_ipv4_address "$cpe_wan_if" "$cpe_wan_ip""
+set_ip_address "$cpe_wan_if" "$cpe_wan_ip"
+/tmp/xl2tpd/xl2tpd -c /tmp/xl2tpd/xl2tpd.conf -D &
+sleep 2
+#start l2tp client
+echo "c $l2tpclient" > /var/run/xl2tpd/l2tp-control
+

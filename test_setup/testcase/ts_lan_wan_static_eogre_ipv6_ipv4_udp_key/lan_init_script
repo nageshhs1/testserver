@@ -1,0 +1,24 @@
+#!/bin/sh
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+
+../../bin/Lan_Reset_Script.sh
+
+#remove all tmp files under log folder
+if [ -d ${ppa_auto_testcase_log_folder} ]; then
+	rm ${ppa_auto_testcase_log_folder}/*  -rf
+else
+	mkdir ${ppa_auto_testcase_log_folder}
+fi	
+
+lan/lan_init
+

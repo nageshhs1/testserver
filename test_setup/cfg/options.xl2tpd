@@ -1,0 +1,12 @@
+noauth
+crtscts
+idle 1800
+mtu 1410
+mru 1410
+nodefaultroute
+debug
+lock
++ipv6
+ipv6cp-accept-local
+
+

@@ -1,0 +1,43 @@
+#!/usr/local/bin/expect
+set ip [lindex $argv 0]
+set log [lindex $argv 1]
+spawn telnet $ip
+expect "'^]'."
+expect {
+	"#" {
+                send "ls \n"
+                expect "#"
+                log_file -noappend $log/telnet_log
+                send_user "Success!!!\n"
+                log_file
+                send "exit\n"
+                expect eof
+        }
+	"login:" {
+		send "root\n"
+		expect "Password:"
+		send "admin\n"
+		expect "#"
+		send "ls \n"
+		expect "#"
+		log_file -noappend $log/telnet_log
+		send_user "Success!!!\n"
+		log_file
+		send "exit\n"
+		expect eof
+	}
+	"host: Connection refused" {
+		log_file -noappend $log/telnet_log
+		send_user "ERROR!!! Connection refused\n"
+		log_file
+		send "exit\n"
+		expect eof
+	}
+	default {
+		log_file -noappend $log/telnet_log
+		send_user "ERROR!!! fail\n"
+		log_file
+		send "exit\n"
+		expect eof
+	}
+}

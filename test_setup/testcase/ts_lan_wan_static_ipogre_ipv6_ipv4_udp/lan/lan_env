@@ -1,0 +1,6 @@
+#define packet generator session number
+packet_session_num_tcp=0
+export packet_session_num_tcp
+
+packet_session_num_udp=1
+export packet_session_num_udp

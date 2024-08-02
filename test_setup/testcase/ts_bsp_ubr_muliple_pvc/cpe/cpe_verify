@@ -1,0 +1,9 @@
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if $phy_wan_ifname0
+. /var/ppa_auto_env
+. /var/cpe_env
+
+cat /proc/driver/vrx518/atm/queue > /var/cpe_mode
+cat /proc/driver/vrx518/atm/cfg > /var/cpe_wan_info
+cat /proc/driver/vrx518/atm/pvc_mib > /var/cpe_pvc_mib

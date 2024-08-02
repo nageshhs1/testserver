@@ -1,0 +1,49 @@
+. /var/cpe_env_global
+. /var/ppa_auto_env
+. /var/cpe_env
+
+stop_br2684 0
+#remove sub interfaces on WAN
+vconfig rem $cpe_wan_if0 
+vconfig rem $cpe_wan_if1 
+vconfig rem $cpe_wan_if2 
+vconfig rem $cpe_wan_if3 
+vconfig rem $cpe_wan_if4 
+vconfig rem $cpe_wan_if5 
+vconfig rem $cpe_wan_if6 
+vconfig rem $cpe_wan_if7
+#remove subinterfaces on LAN
+#Can't remove the first interface.it will remove the connection to lan
+vconfig rem $cpe_lan_if2
+vconfig rem $cpe_lan_if3
+vconfig rem $cpe_lan_if4
+vconfig rem $cpe_lan_if5
+vconfig rem $cpe_lan_if6
+vconfig rem $cpe_lan_if7
+vconfig rem $cpe_lan_if8
+#remove bridge interfaces
+ifconfig br1 down
+ifconfig br2 down
+ifconfig br3 down
+ifconfig br4 down
+ifconfig br5 down
+ifconfig br6 down
+ifconfig br7 down
+ifconfig br8 down
+brctl delbr br1
+brctl delbr br2
+brctl delbr br3
+brctl delbr br4
+brctl delbr br5
+brctl delbr br6
+brctl delbr br7
+brctl delbr br8
+#Remove all NAS interfaces
+ppacmd delwan -i $cpe_wan_base_if0
+ppacmd delwan -i $cpe_wan_base_if1
+ppacmd delwan -i $cpe_wan_base_if2
+ppacmd delwan -i $cpe_wan_base_if3
+ppacmd delwan -i $cpe_wan_base_if4
+ppacmd delwan -i $cpe_wan_base_if5
+ppacmd delwan -i $cpe_wan_base_if6
+ppacmd delwan -i $cpe_wan_base_if7

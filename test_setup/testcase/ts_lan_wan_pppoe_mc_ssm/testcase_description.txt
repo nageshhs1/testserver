@@ -1,0 +1,6 @@
+test purpose: multicast packet under nat with basic lan and pppoe wan
+test enviroment:
+    lan interface: br0: $cpe_lan_if. no vlan
+    wan: pppoe wan based on $phy_wan_ifname0 
+    nat: nat enabled. no dscp change
+    ssm : Source ip enabled ssm=1                                                                                                             

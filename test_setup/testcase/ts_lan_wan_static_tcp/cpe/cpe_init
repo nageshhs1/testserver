@@ -1,0 +1,25 @@
+#!/bin/sh
+
+. /var/cpe_env_global
+#NAT mode with single wan interface and lan interface, both without any vlan
+#br0: $cpe_lan_if
+#br0 <--> NAT <--> $phy_wan_ifname0
+#
+. /var/ppa_auto_env
+. /var/cpe_env
+
+#init dsl_atm if necessary
+start_dsl_atm
+
+start_firewall_flush
+
+#ppa_sleep  5
+#$1: routed(0)/bridge(1) 
+#$2: nas index
+#$3: encapsulation: LLC(0)/LLC(1)
+#$4: 
+start_br2684 1 $nas_index 0 "UBR,aal5:" "0.$pvc"
+set_br_mac_up br0 1
+set_ip_address "br0" $cpe_lan_ip
+
+

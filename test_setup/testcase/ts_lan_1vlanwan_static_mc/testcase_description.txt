@@ -1,0 +1,6 @@
+test purpose: multicast packet under nat with basic lan and 1 vlan wan
+test enviroment:
+    lan interface: br0: $cpe_lan_if. no vlan
+    wan: 1 vlan based on $phy_wan_ifname0 , static ip. 
+    nat: nat enabled. no dscp change
+                                                                                                                                                                       

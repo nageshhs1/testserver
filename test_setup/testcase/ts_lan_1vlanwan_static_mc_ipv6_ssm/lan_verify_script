@@ -1,0 +1,25 @@
+#!/bin/sh 
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+#create patter.conf file
+[ -f $ppa_auto_pattern_cfg_lan ] && { rm $ppa_auto_pattern_cfg_lan; }
+echo "" > $ppa_auto_pattern_cfg_lan
+echo "var check_ip_src 1" >> $ppa_auto_pattern_cfg_lan
+echo "var ip6_src $cpe_wan_gw-$cpe_wan_gw" >> $ppa_auto_pattern_cfg_lan
+echo "var check_ip_dst 1" >> $ppa_auto_pattern_cfg_lan
+echo "var ip6_dst $wan_subnet_llc_br_vlan1_mc_ipv6-$wan_subnet_llc_br_vlan1_mc_end_ipv6" >> $ppa_auto_pattern_cfg_lan
+cat $ppa_auto_pattern_cfg_lan
+echo $ppa_auto_pattern -i $ppa_auto_if_cpe -c $ppa_auto_pattern_cfg_lan -r $ppa_auto_pattern_res_lan -t $ppa_auto_pattern_seconds -g ppa_auto_pattern_debug 
+
+#sometimes linux canot receive multicast if not set to promiscu mode.
+ifconfig $ppa_auto_if_cpe promisc
+ifconfig $ppa_auto_if_cpe up
+$ppa_auto_pattern -i $ppa_auto_if_cpe -c $ppa_auto_pattern_cfg_lan -r $ppa_auto_pattern_res_lan -t $ppa_auto_pattern_seconds -g ppa_auto_pattern_debug

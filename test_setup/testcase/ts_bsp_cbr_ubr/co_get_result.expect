@@ -1,0 +1,31 @@
+#!/usr/bin/expect
+# Get the arguments 
+set ip [lindex $argv 0]
+set port [lindex $argv 1]
+set vpi [lindex $argv 2]
+set vci [lindex $argv 3]
+set log_path [lindex $argv 4]
+set test "$port   $vpi    $vci"
+
+set expect_init_spawn_id 0
+set init_spawn_id 0
+log_file -noappend $log_path/co_result.log
+spawn telnet $ip
+expect "'^]'."
+expect "User name:"
+send "admin\n"
+expect "Password:"
+send "1234\n"
+expect ">"
+
+# Get the statstics of the pvc
+send "statistics port $test\n"
+expect {
+    "usage:" { send "improper input" }
+    "[adsl channel " { send "Port data added to log file" }
+   }
+send "switch vlan set 1 *:FU\n"
+expect ">"
+close $spawn_id
+log_file
+exit 0

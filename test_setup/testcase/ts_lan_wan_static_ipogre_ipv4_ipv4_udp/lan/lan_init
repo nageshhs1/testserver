@@ -1,0 +1,16 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+
+set_ip_address "$ppa_auto_if_cpe" "$lan_ip"
+echo "ip route add $wan_subnet_gre_ipv4_part_address"0"/24 via $cpe_lan_ip"
+ip route add $wan_subnet_gre_ipv4_part_address"0"/24 via $cpe_lan_ip

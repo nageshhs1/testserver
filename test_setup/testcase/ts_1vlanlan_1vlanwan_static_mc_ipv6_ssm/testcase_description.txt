@@ -1,0 +1,6 @@
+test purpose: ipv6 multicast packet under nat with 1 vlan lan and 1 vlan wan
+test enviroment:
+    lan interface: br0: $cpe_lan_if. no vlan
+    wan: 1 vlan based on nas0 , static ip. 
+    nat: nat enabled. no dscp change
+    ssm : Source ip enabled ssm=1                                                                                                             

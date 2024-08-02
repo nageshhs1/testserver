@@ -1,0 +1,31 @@
+#!/bin/sh
+
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if $phy_wan_ifname0
+. /var/ppa_auto_env
+. /var/cpe_env
+
+
+if [ $cpe_nat_enable -gt 0 ]; then 
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if -j MASQUERADE
+fi
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal  
+
+echo "set_ipv4_address "$cpe_wan_if" "$cpe_wan_ip""
+set_ip_address "$cpe_wan_if" "$cpe_wan_ip"
+gre="gre${ppa_auto_name}"
+echo "ip tunnel add $gre mode gre key 1 remote $cpe_wan_gw local $cpe_wan_ip ttl 255"
+ip tunnel add $gre mode gre key 1 remote $cpe_wan_gw local $cpe_wan_ip ttl 255
+echo "ip link set $gre up"
+ip link set $gre up
+echo "set_ip_address "$gre" "$cpe_wan_ip_gre""
+set_ip_address "$gre" "$cpe_wan_ip_gre"
+echo "ip route add $wan_subnet_gre_ipv4_part_address\"0\"/24 dev $gre"
+ip route add $wan_subnet_gre_ipv4_part_address"0"/24 dev $gre
+echo "ip route add $cpe_wan_subnet/24 dev $gre"
+ip route add $cpe_wan_subnet/24 dev $gre
+

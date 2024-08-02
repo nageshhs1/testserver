@@ -1,0 +1,29 @@
+#!/bin/sh
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_co_env_setup
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+../../bin/Cpe_Reset_Script.sh
+
+#Run CO config Script
+path=co_telnet.expect
+echo "TELNET:: to CO:$CO_IP start"
+echo "expect 1:$path 2:$CO_IP 3:$CO_MODE 4:$CO_ENCAP 5:$CO_PORT 6:$CO_VPI 7:$CO_VCI 8:$tmp_folder"
+expect $path $CO_IP $CO_MODE $CO_ENCAP $CO_PORT $CO_VPI $CO_VCI $tmp_folder
+#sudo cp $ppa_auto_testcase_log_folder/co_telnet_log $ppa_auto_packet_result_file
+echo "TELNET:: to CO:$CO_IP complete"
+
+#This function is a work around for non-vlan pppoe testcases only : This function will be called in cpe_init_script of pppoe testcase for non-vlan setup--to makesure the hp 2650 ports are untagged before calling pppd [This function works only for D version - For other version it is a dummy call]
+untag_hp_2650_switch_port_pppoe
+
+#upload script & run it
+download_file "cpe/cpe_init" "/var/t.sh"
+$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c run -s /var/t.sh                  -g $ppa_auto_debug

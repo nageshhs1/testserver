@@ -1,0 +1,37 @@
+<html>
+<head>
+<script type="text/javascript">
+var index=0;
+var timer_id=0;
+function timer_func()
+{
+   //if( timer_id) { clearTimeout(timer_id); timer_id=0; }
+   timer_id=setTimeout("refresh_status()",3000);
+}
+
+function refresh_status()
+{
+   if( ( index % 2 ) == 0 )
+   {
+     if( parent.TestcaseFrame )
+       parent.TestcaseFrame.location.reload();
+      //alert("package");
+   }
+   else
+   {
+      if(  parent.StatusFrame )
+         parent.StatusFrame.location.reload();
+      if(  parent.Status )
+         parent.Status.location.reload();
+      //alert("status");
+   }
+   index ++;
+   if ( index > 10 ) index = 0;
+   timer_func();
+}
+</script>
+</head>
+<body onload="timer_func()">
+</body>
+Timer page to refresh status 
+</html>

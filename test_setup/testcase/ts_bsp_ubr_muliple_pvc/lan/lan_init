@@ -1,0 +1,41 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+#echo "$ppa_auto_if_cpe.$lan_vlan1_id"
+#echo "$ppa_auto_if_cpe.$lan_vlan2_id"
+#echo "$ppa_auto_if_cpe.$lan_vlan3_id"
+#echo "$ppa_auto_if_cpe.$lan_vlan4_id"
+#echo "$ppa_auto_if_cpe.$lan_vlan5_id"
+#echo "$ppa_auto_if_cpe.$lan_vlan6_id"
+#echo "$ppa_auto_if_cpe.$lan_vlan7_id"
+#echo "$ppa_auto_if_cpe.$lan_vlan8_id"
+#echo "$ppa_auto_if_cpe.$lan_vlan9_id"
+
+set_ip_address "$ppa_auto_if_cpe.$lan_vlan1_id" "$lan_ip1"
+set_ip_address "$ppa_auto_if_cpe.$lan_vlan2_id" "$lan_ip2"
+set_ip_address "$ppa_auto_if_cpe.$lan_vlan3_id" "$lan_ip3"
+set_ip_address "$ppa_auto_if_cpe.$lan_vlan4_id" "$lan_ip4"
+set_ip_address "$ppa_auto_if_cpe.$lan_vlan5_id" "$lan_ip5"
+set_ip_address "$ppa_auto_if_cpe.$lan_vlan6_id" "$lan_ip6"
+set_ip_address "$ppa_auto_if_cpe.$lan_vlan7_id" "$lan_ip7"
+set_ip_address "$ppa_auto_if_cpe.$lan_vlan8_id" "$lan_ip8"
+#set_ip_address "$ppa_auto_if_cpe.$lan_vlan9_id" "$lan_ip9"
+set_routeing_table_lanside "$cpe_wan_subnet1" "$cpe_lan_ip1" "$cpe_wan_netmask1"
+set_routeing_table_lanside "$cpe_wan_subnet2" "$cpe_lan_ip2" "$cpe_wan_netmask2"
+set_routeing_table_lanside "$cpe_wan_subnet3" "$cpe_lan_ip3" "$cpe_wan_netmask3"
+set_routeing_table_lanside "$cpe_wan_subnet4" "$cpe_lan_ip4" "$cpe_wan_netmask4"
+set_routeing_table_lanside "$cpe_wan_subnet5" "$cpe_lan_ip5" "$cpe_wan_netmask5"
+set_routeing_table_lanside "$cpe_wan_subnet6" "$cpe_lan_ip6" "$cpe_wan_netmask6"
+set_routeing_table_lanside "$cpe_wan_subnet7" "$cpe_lan_ip7" "$cpe_wan_netmask7"
+set_routeing_table_lanside "$cpe_wan_subnet8" "$cpe_lan_ip8" "$cpe_wan_netmask8"
+#set_routeing_table_lanside "$cpe_wan_subnet9" "$cpe_lan_ip9" "$cpe_wan_netmask9"
+

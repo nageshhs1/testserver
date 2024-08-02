@@ -1,0 +1,42 @@
+#!/bin/sh 
+
+#PVC Setting
+pvc_basic="0.33";                     export pvc_basic
+pvc_vcmux="0.33";                     export pvc_vcmux
+pvc_pppoa_llc="0.33";                 export pvc_pppoa_llc
+pvc_pppoa_vcmux="0.33";               export pvc_pppoa_vcmux
+pvc_vlan2="0.33";                     export pvc_vlan2
+pvc_vlan3="0.33";                     export pvc_vlan3
+pvc_llc_br_vlan1=$pvc_vlan2	      export pvc_llc_br_vlan1
+
+#PVC list for multi pvc test 
+multi_pvc_vlan1=0.33;                           export multi_pvc_vlan1
+multi_pvc_llc_br_vlan1=$multi_pvc_vlan1;              export multi_pvc_llc_br_vlan1
+multi_pvc_vlan2=0.34;                           export multi_pvc_vlan2
+multi_pvc_llc_br_vlan2=$multi_pvc_vlan2;              export multi_pvc_llc_br_vlan2
+multi_pvc_vlan3=0.35;                           export multi_pvc_vlan3
+multi_pvc_llc_br_vlan3=$multi_pvc_vlan3;              export multi_pvc_llc_br_vlan3
+multi_pvc_vlan4=0.36;                           export multi_pvc_vlan4
+multi_pvc_llc_br_vlan4=$multi_pvc_vlan4;              export multi_pvc_llc_br_vlan4
+multi_pvc_vlan5=0.37;                           export multi_pvc_vlan5
+multi_pvc_llc_br_vlan5=$multi_pvc_vlan5;              export multi_pvc_llc_br_vlan5
+multi_pvc_vlan6=0.38;                           export multi_pvc_vlan6
+multi_pvc_llc_br_vlan6=$multi_pvc_vlan6;              export multi_pvc_llc_br_vlan6
+multi_pvc_vlan7=0.39;                           export multi_pvc_vlan7
+multi_pvc_llc_br_vlan7=$multi_pvc_vlan7;              export multi_pvc_llc_br_vlan7
+multi_pvc_vlan8=0.40;                           export multi_pvc_vlan8
+multi_pvc_llc_br_vlan8=$multi_pvc_vlan8;              export multi_pvc_llc_br_vlan8
+multi_pvc_vlan9=0.41;                           export multi_pvc_vlan9
+multi_pvc_llc_br_vlan9=$multi_pvc_vlan9;              export multi_pvc_llc_br_vlan9
+
+#Zyxel CO configuration Parameter List
+CO_IP=10.226.45.122             export CO_IP
+CO_USER="admin"                 export CO_USER
+CO_PASSWORD="1234"              export CO_PASSWORD
+CO_MODE="llc"                   export CO_MODE
+CO_ENCAP="llc"                export CO_ENCAP
+CO_PORT="12"                    export CO_PORT
+CO_VPI="0"                      export CO_VPI
+CO_VCI="33"                     export CO_VCI
+CO_ROUTED_IP="192.168.0.105"    export CO_ROUTED_IP
+

@@ -1,0 +1,35 @@
+#!/bin/sh
+
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if $phy_wan_ifname0
+. /var/ppa_auto_env
+. /var/cpe_env
+
+if [ $cpe_nat_enable -gt 0 ]; then 
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if -j MASQUERADE
+fi
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal  
+
+
+ppa_echo "ip -6 tunnel add $Tunnel_Dev_dslite_Name mode ip4ip6 local $cpe_wan_ip_ipv6 remote $cpe_wan_gw_ipv6"
+ip -6 tunnel add $Tunnel_Dev_dslite_Name mode ip4ip6 local $cpe_wan_ip_ipv6 remote $cpe_wan_gw_ipv6
+
+#ppa_sleep 1
+
+ppa_echo "ifconfig $Tunnel_Dev_dslite_Name up"
+ifconfig $Tunnel_Dev_dslite_Name up
+
+#ppa_sleep 1
+
+ppa_echo "set_ipv6_address "$cpe_wan_if" "$cpe_wan_ip_ipv6" "$ipv6_subnetmask""
+set_ip_address "$cpe_wan_if" "$cpe_wan_ip_ipv6" "$ipv6_subnetmask"
+
+#ppa_sleep 1
+
+ppa_echo "set_ipv4_address "$Tunnel_Dev_dslite_Name" "$cpe_wan_ip_ipv4_dslite" "24" "dslite""
+set_ip_address "$Tunnel_Dev_dslite_Name" "$cpe_wan_ip_ipv4_dslite" "24"
+

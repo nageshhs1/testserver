@@ -1,0 +1,8 @@
+#!/bin/sh 
+. /var/cpe_env_global
+. /var/ppa_auto_env
+. /var/cpe_env
+
+stop_br2684 0
+echo 1 > /sys/devices/virtual/net/br0/bridge/multicast_snooping
+

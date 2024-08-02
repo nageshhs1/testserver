@@ -1,0 +1,207 @@
+#!/bin/sh
+
+# #define pvc and calcuate nas_index, also change $phy_wan_ifname0 value since default it is nas0 in ATM wan mode.
+# pvc=$pvc_llc_br_vlan1;  export pvc
+# nas_index=$(get_nas_index $pvc); export nas_index
+# phy_wan_ifname0=$(rework_wan_ifname "$phy_wan_ifname0" "$nas_index");
+# ppa_echo phy_wan_ifname0=$phy_wan_ifname0
+# Define multi pvc and corresponding nas interfaces 
+
+pvc1=$multi_pvc_llc_br_vlan1;  export pvc1
+nas_index1=$(get_nas_index $pvc1); export nas_index1
+phy_wan_ifname0=$(rework_wan_ifname "$phy_wan_ifname0" "$nas_index1");
+ppa_echo phy_wan_ifname0=$phy_wan_ifname0
+
+pvc2=$multi_pvc_llc_br_vlan2;  export pvc2
+nas_index2=$(get_nas_index $pvc2); export nas_index2
+phy_wan_ifname1=$(rework_wan_ifname "$phy_wan_ifname0" "$nas_index2");
+ppa_echo phy_wan_ifname1=$phy_wan_ifname1
+
+pvc3=$multi_pvc_llc_br_vlan3;  export pvc3
+nas_index3=$(get_nas_index $pvc3); export nas_index3
+phy_wan_ifname2=$(rework_wan_ifname "$phy_wan_ifname0" "$nas_index3");
+ppa_echo phy_wan_ifname2=$phy_wan_ifname2
+
+pvc4=$multi_pvc_llc_br_vlan4;  export pvc4
+nas_index4=$(get_nas_index $pvc4); export nas_index4
+phy_wan_ifname3=$(rework_wan_ifname "$phy_wan_ifname0" "$nas_index4");
+ppa_echo phy_wan_ifname3=$phy_wan_ifname3
+
+
+
+#define lan/wan interfaces:
+cpe_lan_base_if=$phy_lan_ifname0;    		 export cpe_lan_base_if
+lan_vlan1_id=$lan_vlan1_multi;                         export lan_vlan1_id
+lan_vlan2_id=$lan_vlan2_multi;                         export lan_vlan2_id
+lan_vlan3_id=$lan_vlan3_multi;                         export lan_vlan3_id
+lan_vlan4_id=$lan_vlan4_multi                         export lan_vlan4_id
+
+
+
+cpe_lan_if1="$cpe_lan_base_if.$lan_vlan1_id";      export cpe_lan_if1
+cpe_lan_if2="$cpe_lan_base_if.$lan_vlan2_id";      export cpe_lan_if2
+cpe_lan_if3="$cpe_lan_base_if.$lan_vlan3_id";      export cpe_lan_if3
+cpe_lan_if4="$cpe_lan_base_if.$lan_vlan4_id";      export cpe_lan_if4
+
+
+
+cpe_wan_base_if0=$phy_wan_ifname0;                export cpe_wan_base_if0
+cpe_wan_base_if1=$phy_wan_ifname1;                export cpe_wan_base_if1
+cpe_wan_base_if2=$phy_wan_ifname2;                export cpe_wan_base_if2
+cpe_wan_base_if3=$phy_wan_ifname3;                export cpe_wan_base_if3
+
+wan_vlan1_id=$wan_llc_br_vlan1_id_multi;                export wan_vlan1_id
+wan_vlan2_id=$wan_llc_br_vlan2_id_multi;                export wan_vlan2_id
+wan_vlan3_id=$wan_llc_br_vlan3_id_multi;                export wan_vlan3_id
+wan_vlan4_id=$wan_llc_br_vlan4_id_multi;                export wan_vlan4_id
+
+
+
+cpe_wan_if0="$cpe_wan_base_if0.$wan_vlan1_id";      export cpe_wan_if0
+cpe_wan_if1="$cpe_wan_base_if1.$wan_vlan2_id";      export cpe_wan_if1
+cpe_wan_if2="$cpe_wan_base_if2.$wan_vlan3_id";      export cpe_wan_if2
+cpe_wan_if3="$cpe_wan_base_if3.$wan_vlan4_id";      export cpe_wan_if3
+
+
+
+cpe_nat_enable=1;                                export cpe_nat_enable
+cpe_wan_vlan_s=1;                                export cpe_wan_vlan_s
+cpe_wan_vlan_e=6;                                export cpe_wan_vlan_e
+#--------------------------------Define CPE LAN/WAN IP and LAN PC IP--------------------------------Begin
+
+#define cpe lan subnet    *************** Need change it according to different test case
+cpe_lan_subnet1=$lan_subnet_vlan1_multi
+cpe_lan_subnet2=$lan_subnet_vlan2_multi
+cpe_lan_subnet3=$lan_subnet_vlan3_multi
+cpe_lan_subnet4=$lan_subnet_vlan4_multi
+export cpe_lan_subnet1
+export cpe_lan_subnet2
+export cpe_lan_subnet3
+export cpe_lan_subnet4
+
+#define cpe lan netmask
+cpe_lan_netmask1=$lan_subnet_vlan1_mask_multi
+cpe_lan_netmask2=$lan_subnet_vlan2_mask_multi
+cpe_lan_netmask3=$lan_subnet_vlan3_mask_multi
+cpe_lan_netmask4=$lan_subnet_vlan4_mask_multi
+export cpe_lan_netmask1
+export cpe_lan_netmask2
+export cpe_lan_netmask3
+export cpe_lan_netmask4
+
+#--------------------------------Define CPE WAN IP--------------------------------Begin
+#define cpe wan subnet  ************** Need change it according to different test case
+cpe_wan_subnet1=$wan_subnet_llc_br_vlan1_multi
+cpe_wan_subnet2=$wan_subnet_llc_br_vlan2_multi
+cpe_wan_subnet3=$wan_subnet_llc_br_vlan3_multi
+cpe_wan_subnet4=$wan_subnet_llc_br_vlan4_multi
+export cpe_wan_subnet1
+export cpe_wan_subnet2
+export cpe_wan_subnet3
+export cpe_wan_subnet4
+
+cpe_wan_netmask1=$wan_subnet_llc_br_vlan1_mask_multi
+cpe_wan_netmask2=$wan_subnet_llc_br_vlan2_mask_multi
+cpe_wan_netmask3=$wan_subnet_llc_br_vlan3_mask_multi
+cpe_wan_netmask4=$wan_subnet_llc_br_vlan4_mask_multi
+export cpe_wan_netmask1
+export cpe_wan_netmask2
+export cpe_wan_netmask3
+export cpe_wan_netmask4
+
+# #define multicast_ip   ************** Need change it according to different test case
+#multicast_ip=$wan_subnet_llc_br_vlan1_mc
+# export multicast_ip
+
+# #define multicast_ip  number ************** Need change it according to different test case
+multicast_ip_num1=$wan_subnet_llc_br_vlan1_mc_num_multi
+multicast_ip_num2=$wan_subnet_llc_br_vlan2_mc_num_multi
+multicast_ip_num3=$wan_subnet_llc_br_vlan3_mc_num_multi
+multicast_ip_num4=$wan_subnet_llc_br_vlan4_mc_num_multi
+export multicast_ip_num1
+export multicast_ip_num2
+export multicast_ip_num3
+export multicast_ip_num4
+
+
+#create cpe lan interface ip according to its subnet and ppa automation session name
+get_cpe_lan_ip $cpe_lan_subnet1
+cpe_lan_ip1=$tmp_cpe_lan_ip
+export cpe_lan_ip1
+get_cpe_lan_ip $cpe_lan_subnet2
+cpe_lan_ip2=$tmp_cpe_lan_ip
+export cpe_lan_ip2
+get_cpe_lan_ip $cpe_lan_subnet3
+cpe_lan_ip3=$tmp_cpe_lan_ip
+export cpe_lan_ip3
+get_cpe_lan_ip $cpe_lan_subnet4
+cpe_lan_ip4=$tmp_cpe_lan_ip
+export cpe_lan_ip4
+#create lan pc ip according to its subnet and ppa automation session name
+get_lan_ip_route_mode $cpe_lan_subnet1
+lan_ip1=$tmp_lan_ip_route_mode
+export lan_ip1
+get_lan_ip_route_mode $cpe_lan_subnet2
+lan_ip2=$tmp_lan_ip_route_mode
+export lan_ip2
+get_lan_ip_route_mode $cpe_lan_subnet3
+lan_ip3=$tmp_lan_ip_route_mode
+export lan_ip3
+get_lan_ip_route_mode $cpe_lan_subnet4
+lan_ip4=$tmp_lan_ip_route_mode
+export lan_ip4
+#create cpe wan interface ip according to its subnet and ppa automation session name
+get_cpe_wan_ip $cpe_wan_subnet1
+cpe_wan_ip1=$tmp_cpe_wan_ip
+export cpe_wan_ip1
+get_cpe_wan_ip $cpe_wan_subnet2
+cpe_wan_ip2=$tmp_cpe_wan_ip
+export cpe_wan_ip2
+get_cpe_wan_ip $cpe_wan_subnet3
+cpe_wan_ip3=$tmp_cpe_wan_ip
+export cpe_wan_ip3
+get_cpe_wan_ip $cpe_wan_subnet4
+cpe_wan_ip4=$tmp_cpe_wan_ip
+export cpe_wan_ip4
+#create cpe wan interface. Always set first ip for gw according to its subnet
+get_cpe_gw_ip $cpe_wan_subnet1
+cpe_wan_gw1=$tmp_cpe_gw_ip
+export cpe_wan_gw1 
+get_cpe_gw_ip $cpe_wan_subnet2
+cpe_wan_gw2=$tmp_cpe_gw_ip
+export cpe_wan_gw2 
+get_cpe_gw_ip $cpe_wan_subnet3
+cpe_wan_gw3=$tmp_cpe_gw_ip
+export cpe_wan_gw3
+get_cpe_gw_ip $cpe_wan_subnet4
+cpe_wan_gw4=$tmp_cpe_gw_ip
+export cpe_wan_gw4
+
+if [ $enable_ips_debug -eq 1 ]; then
+    echo "cpe_lan_subnet=$cpe_lan_subnet"
+    echo "cpe_lan_netmask=$cpe_lan_netmask"
+    echo "cpe_lan_ip=$cpe_lan_ip"
+    echo "lan_ip=$lan_ip"
+
+    echo "cpe_wan_subnet=$cpe_wan_subnet"
+    echo "cpe_wan_ip=$cpe_wan_ip"
+    echo "cpe_wan_gw=$cpe_wan_gw"
+
+    echo "multicast_ip=$multicast_ip"
+    echo "cpe_wan_base_if=$cpe_wan_base_if"
+    echo "cpe_wan_if=$cpe_wan_if"
+    echo "wan_vlan_id=$wan_vlan_id"
+fi
+multi_ips_debug=0;
+if [ $multi_ips_debug -eq 1 ]; then
+	echo "cpe_lan_if1=$cpe_lan_if1"
+	echo "cpe_lan_if2=$cpe_lan_if2"
+	echo "cpe_lan_if3=$cpe_lan_if3"
+	echo "cpe_lan_if4=$cpe_lan_if4"
+        
+	echo "pvc1=$pvc1"
+	echo "pvc2=$pvc2"
+	echo "pvc3=$pvc3"
+	echo "pvc4=$pvc4"
+
+fi

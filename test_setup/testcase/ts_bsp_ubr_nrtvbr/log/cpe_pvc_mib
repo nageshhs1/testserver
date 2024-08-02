@@ -1,0 +1,160 @@
+PVC 0/33, dev: nas0, MIB:
+AAL5 RX PKTs:		 568
+AAL5 RX Bytes:		 44366
+AAL5 RX Err:		 0
+AAL5 RX Drop:		 0
+OAM  RX PKTs:		 0
+OAM  RX Bytes:		 0
+OAM  RX Err:		 0
+OAM  RX Drop:		 0
+AAL5 TX PKTs:		 614
+AAL5 TX Bytes:		 882038
+AAL5 TX Err:		 0
+AAL5 TX Drop:		 0
+OAM  TX PKTs:		 0
+OAM  TX Bytes:		 0
+OAM  TX Err:		 0
+OAM  TX Drop:		 0
+
+Queue[0]: TX PKTs:	 614
+
+PVC 0/34, dev: nas1, MIB:
+AAL5 RX PKTs:		 1072
+AAL5 RX Bytes:		 80138
+AAL5 RX Err:		 0
+AAL5 RX Drop:		 0
+OAM  RX PKTs:		 0
+OAM  RX Bytes:		 0
+OAM  RX Err:		 0
+OAM  RX Drop:		 0
+AAL5 TX PKTs:		 1643
+AAL5 TX Bytes:		 2401422
+AAL5 TX Err:		 0
+AAL5 TX Drop:		 0
+OAM  TX PKTs:		 0
+OAM  TX Bytes:		 0
+OAM  TX Err:		 0
+OAM  TX Drop:		 0
+
+Queue[0]: TX PKTs:	 1643
+
+PVC 0/35, dev: nas2, MIB:
+AAL5 RX PKTs:		 480
+AAL5 RX Bytes:		 38250
+AAL5 RX Err:		 0
+AAL5 RX Drop:		 0
+OAM  RX PKTs:		 0
+OAM  RX Bytes:		 0
+OAM  RX Err:		 0
+OAM  RX Drop:		 0
+AAL5 TX PKTs:		 513
+AAL5 TX Bytes:		 738464
+AAL5 TX Err:		 0
+AAL5 TX Drop:		 0
+OAM  TX PKTs:		 0
+OAM  TX Bytes:		 0
+OAM  TX Err:		 0
+OAM  TX Drop:		 0
+
+Queue[0]: TX PKTs:	 513
+
+PVC 0/36, dev: nas3, MIB:
+AAL5 RX PKTs:		 479
+AAL5 RX Bytes:		 37452
+AAL5 RX Err:		 0
+AAL5 RX Drop:		 0
+OAM  RX PKTs:		 0
+OAM  RX Bytes:		 0
+OAM  RX Err:		 0
+OAM  RX Drop:		 0
+AAL5 TX PKTs:		 513
+AAL5 TX Bytes:		 734198
+AAL5 TX Err:		 0
+AAL5 TX Drop:		 0
+OAM  TX PKTs:		 0
+OAM  TX Bytes:		 0
+OAM  TX Err:		 0
+OAM  TX Drop:		 0
+
+Queue[0]: TX PKTs:	 513
+
+PVC 0/37, dev: nas4, MIB:
+AAL5 RX PKTs:		 478
+AAL5 RX Bytes:		 37732
+AAL5 RX Err:		 0
+AAL5 RX Drop:		 0
+OAM  RX PKTs:		 0
+OAM  RX Bytes:		 0
+OAM  RX Err:		 0
+OAM  RX Drop:		 0
+AAL5 TX PKTs:		 512
+AAL5 TX Bytes:		 736986
+AAL5 TX Err:		 0
+AAL5 TX Drop:		 0
+OAM  TX PKTs:		 0
+OAM  TX Bytes:		 0
+OAM  TX Err:		 0
+OAM  TX Drop:		 0
+
+Queue[0]: TX PKTs:	 512
+
+PVC 0/38, dev: nas5, MIB:
+AAL5 RX PKTs:		 479
+AAL5 RX Bytes:		 37764
+AAL5 RX Err:		 0
+AAL5 RX Drop:		 0
+OAM  RX PKTs:		 0
+OAM  RX Bytes:		 0
+OAM  RX Err:		 0
+OAM  RX Drop:		 0
+AAL5 TX PKTs:		 513
+AAL5 TX Bytes:		 737042
+AAL5 TX Err:		 0
+AAL5 TX Drop:		 0
+OAM  TX PKTs:		 0
+OAM  TX Bytes:		 0
+OAM  TX Err:		 0
+OAM  TX Drop:		 0
+
+Queue[0]: TX PKTs:	 513
+
+PVC 0/39, dev: nas6, MIB:
+AAL5 RX PKTs:		 479
+AAL5 RX Bytes:		 37784
+AAL5 RX Err:		 0
+AAL5 RX Drop:		 0
+OAM  RX PKTs:		 0
+OAM  RX Bytes:		 0
+OAM  RX Err:		 0
+OAM  RX Drop:		 0
+AAL5 TX PKTs:		 513
+AAL5 TX Bytes:		 737042
+AAL5 TX Err:		 0
+AAL5 TX Drop:		 0
+OAM  TX PKTs:		 0
+OAM  TX Bytes:		 0
+OAM  TX Err:		 0
+OAM  TX Drop:		 0
+
+Queue[0]: TX PKTs:	 513
+
+PVC 0/40, dev: nas7, MIB:
+AAL5 RX PKTs:		 0
+AAL5 RX Bytes:		 0
+AAL5 RX Err:		 0
+AAL5 RX Drop:		 0
+OAM  RX PKTs:		 0
+OAM  RX Bytes:		 0
+OAM  RX Err:		 0
+OAM  RX Drop:		 0
+AAL5 TX PKTs:		 6
+AAL5 TX Bytes:		 668
+AAL5 TX Err:		 0
+AAL5 TX Drop:		 0
+OAM  TX PKTs:		 0
+OAM  TX Bytes:		 0
+OAM  TX Err:		 0
+OAM  TX Drop:		 0
+
+Queue[0]: TX PKTs:	 6
+

@@ -1,0 +1,55 @@
+#!/bin/sh 
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+sec=20
+cat $ppa_auto_testcase_log_folder/result_cpe | grep sec | head -$sec | tail -1 | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_testcase_log_folder/result_cpe.log
+cat $ppa_auto_testcase_log_folder/result_tso_lro | grep success | awk '{print $4}' > $ppa_auto_testcase_log_folder/result_lro.log
+cat $ppa_auto_testcase_log_folder/result_tso_lro | grep tx | awk '{print $4}' > $ppa_auto_testcase_log_folder/result_tso.log
+cat $ppa_auto_testcase_log_folder/cpe_sessions | grep lro_irq | awk '{print $2,$6}' > $ppa_auto_testcase_log_folder/cpe_sessions.log
+
+
+if [ ! -f $ppa_auto_packet_result_file ]; then
+	echo "why no packet rsult file:$ppa_auto_packet_result_file"
+        report_quit $ppa_auto_result_fail;
+fi
+
+tso=$(( echo 0 2k ; sed 's/$/ +/' log/result_tso.log ; echo p ) | dc)
+lro=$(( echo 0 2k ; sed 's/$/ +/' log/result_lro.log ; echo p ) | dc)
+BW=$(cat $ppa_auto_packet_result_file | awk '{print $2}')
+rate=$(cat $ppa_auto_packet_result_file | awk '{print $2$3}')
+cpe_rate=$(cat $ppa_auto_testcase_log_folder/result_cpe.log | awk '{print $2$3}')
+cpe_sessions=$(cat $ppa_auto_testcase_log_folder/cpe_sessions.log | wc -l)
+if [ ! -z $BW ]; then
+	echo "LAN TCP Rate:$rate"
+	echo "CPE TCP Rate:$cpe_rate"
+	echo "CPE TSO value:$tso"
+	echo "CPE LRO value:$lro"
+	echo "TCP Sessions:$cpe_sessions"
+	tx=$(echo "$tso > 0" | bc -q )
+	rx=$(echo "$lro > 0" | bc -q )
+	if [ $tx = 1 ] && [ $rx = 1 ]; then
+		echo "$ppa_auto_result_ok"
+		report_quit "$ppa_auto_result_ok($rate, $cpe_rate,TSO:$tso,LRO:$lro)"
+	else
+		if [ $tx = 0 ]; then
+			echo "TSO:$ppa_auto_result_fail"
+			report_quit "$ppa_auto_result_fail"
+		fi
+		if [ $rx = 0 ]; then
+			echo "LRO:$ppa_auto_result_fail"
+			report_quit "$ppa_auto_result_fail"
+		fi
+	fi
+else 
+	echo "$ppa_auto_result_fail"	
+	report_quit "$ppa_auto_result_fail"
+fi

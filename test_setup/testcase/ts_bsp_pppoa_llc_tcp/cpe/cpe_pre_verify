@@ -1,0 +1,13 @@
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if nas0
+. /var/ppa_auto_env
+. /var/cpe_env
+
+
+
+#start_firewall_enable
+
+#clear all mibs
+#echo clear all > /proc/eth/mib
+

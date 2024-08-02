@@ -1,0 +1,53 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+http_response_code=200
+user=$cpe_login
+passwd=$cpe_passwd
+login=$(curl -o /dev/null --silent --head --write-out '%{http_code}\n' http://$cpe_lan_ip/login.asp)
+if [ $login -eq 200 ] 
+then
+	frame=$(curl -o /dev/null --silent --head --write-out '%{http_code}\n' http://$cpe_lan_ip/frame_setup.htm)
+	[ $frame -ne 200 ] && echo "Error: HTTP status:$frame" && exit 1;
+	frame=$(curl -o /dev/null --silent --head --write-out '%{http_code}\n' http://$cpe_lan_ip/menu_setup.asp)
+	[ $frame -ne 200 ] && echo "Error: HTTP status:$frame" && exit 1;
+	frame=$(curl -o /dev/null --silent --head --write-out '%{http_code}\n' http://$cpe_lan_ip/wan_mode_setting.asp)
+	[ $frame -ne 200 ] && echo "Error: HTTP status:$frame" && exit 1;
+	frame=$(curl -o /dev/null --silent --head --write-out '%{http_code}\n' http://$cpe_lan_ip/syslog_ng.asp)
+	[ $frame -ne 200 ] && echo "Error: HTTP status:$frame" && exit 1;
+	
+	if [ $frame -eq 200 ]; then
+		echo "Success" >> $ppa_auto_packet_result_file
+	else
+		echo "Failure" >> $ppa_auto_packet_result_file
+	fi
+else
+
+	status=$(wget --spider -S "http://$user:$passwd@$cpe_lan_ip/#/tabHead/adv_homepage" 2>&1 | grep "HTTP/" | awk '{print $2}' | grep "200")
+	[ $status -ne 200 ] && echo "Error: HTTP status:$status" && exit 1;
+	status=$(wget --spider -S "http://$user:$passwd@$cpe_lan_ip/#/tableform/wan_wanconnections" 2>&1 | grep "HTTP/" | awk '{print $2}' | grep "200")
+	[ $status -ne 200 ] && echo "Error: HTTP status:$status" && exit 1;
+	status=$(wget --spider -S "http://$user:$passwd@$cpe_lan_ip/#/tableform/lan" 2>&1 | grep "HTTP/" | awk '{print $2}' | grep "200")
+	[ $status -ne 200 ] && echo "Error: HTTP status:$status" && exit 1;
+	status=$(wget --spider -S "http://$user:$passwd@$cpe_lan_ip/#/custom/firewall" 2>&1 | grep "HTTP/" | awk '{print $2}' | grep "200")
+	[ $status -ne 200 ] && echo "Error: HTTP status:$status" && exit 1;
+	status=$(wget --spider -S "http://$user:$passwd@$cpe_lan_ip/#/tableform/wifi2.4_basic" 2>&1 | grep "HTTP/" | awk '{print $2}' | grep "200")
+	[ $status -ne 200 ] && echo "Error: HTTP status:$status" && exit 1;
+
+	if [ $status -eq 200 ]; then
+		echo "Success" >> $ppa_auto_packet_result_file
+	else
+		echo "Failure" >> $ppa_auto_packet_result_file
+	fi
+fi
+
+

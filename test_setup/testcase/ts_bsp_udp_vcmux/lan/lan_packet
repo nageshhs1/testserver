@@ -1,0 +1,15 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+sec=20
+iperf -c "$cpe_wan_gw" -i 1 -u -b 10M -l 1k -t $sec > $ppa_auto_testcase_log_folder/result
+cat $ppa_auto_testcase_log_folder/result | grep -A2 "Server Report" | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file

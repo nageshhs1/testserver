@@ -1,0 +1,37 @@
+#!/bin/sh
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+../../bin/Wan_Reset_Script.sh
+
+wan/wan_init
+
+gre="test_gre${ppa_auto_name}"
+echo "Wan Side settings:"
+echo "ip -6 tunnel add $gre mode ip6gre remote $cpe_wan_ip local $cpe_wan_gw ttl 255"
+cmd="ip -6 tunnel add $gre mode ip6gre remote $cpe_wan_ip local $cpe_wan_gw ttl 255"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -r 0
+echo "ip -6 link set $gre up"
+cmd="ip -6 link set $gre up"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -r 0
+echo "ip -6 addr add $cpe_wan_gw_gre dev $gre"
+cmd="ip -6 addr add $cpe_wan_gw_gre dev $gre"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -r 0
+
+echo "ip -6 route add $wan_subnet_gre_ipv6_part_address\"0\"/$ipv6_subnetmask dev $gre"
+cmd="ip -6 route add $wan_subnet_gre_ipv6_part_address\"0\"/$ipv6_subnetmask dev $gre"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -r 0
+
+echo "ip -6 route add $lan_ip via $cpe_wan_ip_gre"
+cmd="ip -6 route add $lan_ip via $cpe_wan_ip_gre"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -r 0
+
+

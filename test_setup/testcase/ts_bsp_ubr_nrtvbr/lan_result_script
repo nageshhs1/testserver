@@ -1,0 +1,104 @@
+#!/bin/sh 
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+co_result="log/co_result.log"
+max_pcr=10000
+#ppa_auto_packet_result_file="log/ppa_auto_packet_result"
+: << 'COMMENT'
+if [ 0 ]; then
+	if [ ! -f $ppa_auto_packet_result_file1 ]; then
+		echo "why no packet result file:$ppa_auto_packet_result_file1"
+        	report_quit $ppa_auto_result_fail;
+	fi
+	if [ ! -f $ppa_auto_packet_result_file2 ]; then
+        	echo "why no packet result file:$ppa_auto_packet_result_file2"
+        	report_quit $ppa_auto_result_fail;
+	fi
+	if [ ! -f $co_result ]; then
+        	echo "why no packet result file: $co_result"
+        	report_quit $ppa_auto_result_fail;
+	fi
+	cells=$(grep -F "rx cells" $co_result | grep -oE "[0-9]+")
+
+	if (($(echo "$cells < $max_pcr" | bc ))); then
+        	echo " Co_result pass: $cells"
+	        echo "$ppa_auto_result_ok($cells)"
+        	Test_result="pass"
+	else
+        	echo "Co_result fail: $cells"
+	        echo "$ppa_auto_result_fail($cells)"
+        	 Test_result="fail"
+	fi
+fi
+COMMENT
+#BW=$(cat $ppa_auto_packet_result_file | grep -A1 "Report" | awk '{print $2}')
+#rate1=$(cat $ppa_auto_packet_result_file | grep -A1 "Report" | awk '{print $2$3}')
+BW=$(cat $ppa_auto_packet_result_file1 | awk '{print $2}')
+rate1=$(cat $ppa_auto_packet_result_file1 | awk '{print $2$3}')
+chk1="Mbits"
+chk2="Kbits"
+echo $BW
+echo $rate1
+if [[ $rate1 == *"$chk1"* ]]; then
+        rate=$(echo "$BW * 1000" | bc)
+	echo $rate
+elif [[ $rate1 == *"$chk2"* ]]; then
+        rate=$(echo "$BW * 1" | bc)
+	echo $rate
+fi
+if [ ! -z $BW ]; then
+        echo "TCP Rate:$rate1"
+        gt=$(echo "$BW >= 1" | bc -q )
+        #if [ $gt = 1 ]; then
+        #if [[ $rate == *"$chk_rate"* ]]; then
+        # Rate is Modified from 500 to 400 because of 2 PVCs
+        if (( $(echo "$rate > 200" | bc -l) )); then
+                echo "$ppa_auto_result_ok($rate1)"
+                #report_quit "$ppa_auto_result_ok($rate1)"
+        else
+                echo "$ppa_auto_result_fail($rate1)"
+                report_quit "$ppa_auto_result_fail($rate1)"
+        fi
+else
+        echo "$ppa_auto_result_fail"
+        report_quit "$ppa_auto_result_fail"
+fi
+# For the second result file speed check 
+BW=$(cat $ppa_auto_packet_result_file2 | awk '{print $2}')
+rate1=$(cat $ppa_auto_packet_result_file2 | awk '{print $2$3}')
+chk1="Mbits"
+chk2="Kbits"
+echo $BW
+echo $rate1
+if [[ $rate1 == *"$chk1"* ]]; then
+        rate=$(echo "$BW * 1000" | bc)
+        echo $rate
+elif [[ $rate1 == *"$chk2"* ]]; then
+        rate=$(echo "$BW * 1" | bc)
+        echo $rate
+fi
+if [ ! -z $BW ]; then
+        echo "TCP Rate:$rate1"
+        gt=$(echo "$BW >= 1" | bc -q )
+        #if [ $gt = 1 ]; then
+        #if [[ $rate == *"$chk_rate"* ]]; then
+        if (( $(echo "$rate > 400" | bc -l) )); then
+                echo "$ppa_auto_result_ok($rate1)"
+                report_quit "$ppa_auto_result_ok($rate1)"
+        else
+                echo "$ppa_auto_result_fail($rate1)"
+                report_quit "$ppa_auto_result_fail($rate1)"
+        fi
+else
+        echo "$ppa_auto_result_fail"
+        report_quit "$ppa_auto_result_fail"
+fi
+

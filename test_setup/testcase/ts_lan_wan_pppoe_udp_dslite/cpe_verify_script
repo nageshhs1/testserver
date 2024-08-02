@@ -1,0 +1,28 @@
+#!/bin/sh
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+#upload and run command: cpe_verify
+download_file "cpe/cpe_verify" "/var/t.sh"
+#$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c put -s cpe/cpe_verify -d /var/t.sh  -g $ppa_auto_debug
+#ppa_sleep  2
+
+$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c run -s /var/t.sh                    -g $ppa_auto_debug
+#ppa_sleep  3
+
+
+if [ -f $ppa_auto_local_mib_file ]; then
+    rm -d $ppa_auto_local_mib_file
+fi
+#Read tc mib counter from cpe via serial port
+cat_mib_cmd="cat /proc/mpe/tc_mib"
+$serialport_rw "$ppa_auto_local_mib_file" "$cat_mib_cmd"
+cat $ppa_auto_local_mib_file

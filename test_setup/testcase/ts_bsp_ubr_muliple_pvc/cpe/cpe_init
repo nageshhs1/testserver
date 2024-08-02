@@ -1,0 +1,98 @@
+#!/bin/sh 
+
+. /var/cpe_env_global
+#NAT mode with single wan interface and lan interface, both without any vlan
+#br0: $cpe_lan_if
+#br0 <--> NAT <--> nas0.3
+#
+. /var/ppa_auto_env
+. /var/cpe_env
+
+#init dsl_atm if necessary
+start_dsl_atm
+
+start_firewall_flush
+
+#ppa_sleep  5
+#$1: routed(0)/bridge(1) 
+#$2: nas index
+#$3: encapsulation: LLC(0)/LLC(1)
+#$4: 
+start_br2684 1 $nas_index1 0 "UBR,aal5:" "0.$pvc1"
+start_br2684 1 $nas_index2 0 "UBR,aal5:" "0.$pvc2"
+start_br2684 1 $nas_index3 0 "UBR,aal5:" "0.$pvc3"
+start_br2684 1 $nas_index4 0 "UBR,aal5:" "0.$pvc4"
+start_br2684 1 $nas_index5 0 "UBR,aal5:" "0.$pvc5"
+start_br2684 1 $nas_index6 0 "UBR,aal5:" "0.$pvc6"
+start_br2684 1 $nas_index7 0 "UBR,aal5:" "0.$pvc7"
+start_br2684 1 $nas_index8 0 "UBR,aal5:" "0.$pvc8"
+#start_br2684 1 $nas_index9 0 "UBR,aal5:max_pcr=200" "0.$pvc9"
+brctl addbr br1
+brctl addbr br2
+brctl addbr br3
+brctl addbr br4
+brctl addbr br5
+brctl addbr br6
+brctl addbr br7
+#brctl addbr br8
+set_br_mac_up br0 1
+set_br_mac_up br1 2
+set_br_mac_up br2 3
+set_br_mac_up br3 4
+set_br_mac_up br4 5
+set_br_mac_up br5 6
+set_br_mac_up br6 7
+set_br_mac_up br7 8
+#set_br_mac_up br8 9
+
+set_ip_address "br0" $cpe_lan_ip1
+set_ip_address "br1" $cpe_lan_ip2
+set_ip_address "br2" $cpe_lan_ip3
+set_ip_address "br3" $cpe_lan_ip4
+set_ip_address "br4" $cpe_lan_ip5
+set_ip_address "br5" $cpe_lan_ip6
+set_ip_address "br6" $cpe_lan_ip7
+set_ip_address "br7" $cpe_lan_ip8
+#set_ip_address "br8" $cpe_lan_ip9
+
+set_ip_address "$cpe_lan_if1" "0.0.0.0"
+set_ip_address "$cpe_lan_if2" "0.0.0.0"
+set_ip_address "$cpe_lan_if3" "0.0.0.0"
+set_ip_address "$cpe_lan_if4" "0.0.0.0"
+set_ip_address "$cpe_lan_if5" "0.0.0.0"
+set_ip_address "$cpe_lan_if6" "0.0.0.0"
+set_ip_address "$cpe_lan_if7" "0.0.0.0"
+set_ip_address "$cpe_lan_if8" "0.0.0.0"
+#set_ip_address "$cpe_lan_if9" "0.0.0.0"
+
+brctl addif br0 $cpe_lan_if1
+brctl addif br1 $cpe_lan_if2
+brctl addif br2 $cpe_lan_if3
+brctl addif br3 $cpe_lan_if4
+brctl addif br4 $cpe_lan_if5
+brctl addif br5 $cpe_lan_if6
+brctl addif br6 $cpe_lan_if7
+brctl addif br7 $cpe_lan_if8
+#brctl addif br8 $cpe_lan_if9
+
+brctl delif br0 $cpe_lan_base_if
+
+ifconfig $cpe_lan_if1 0.0.0.0 up
+ifconfig $cpe_lan_if2 0.0.0.0 up
+ifconfig $cpe_lan_if3 0.0.0.0 up
+ifconfig $cpe_lan_if4 0.0.0.0 up
+ifconfig $cpe_lan_if5 0.0.0.0 up
+ifconfig $cpe_lan_if6 0.0.0.0 up
+ifconfig $cpe_lan_if7 0.0.0.0 up
+ifconfig $cpe_lan_if8 0.0.0.0 up
+#ifconfig $cpe_lan_if9 0.0.0.0 up
+
+ifconfig $cpe_wan_base_if0 0.0.0.0 up
+ifconfig $cpe_wan_base_if1 0.0.0.0 up
+ifconfig $cpe_wan_base_if2 0.0.0.0 up
+ifconfig $cpe_wan_base_if3 0.0.0.0 up
+ifconfig $cpe_wan_base_if4 0.0.0.0 up
+ifconfig $cpe_wan_base_if5 0.0.0.0 up
+ifconfig $cpe_wan_base_if6 0.0.0.0 up
+ifconfig $cpe_wan_base_if7 0.0.0.0 up
+#ifconfig $cpe_wan_base_if8 0.0.0.0 up

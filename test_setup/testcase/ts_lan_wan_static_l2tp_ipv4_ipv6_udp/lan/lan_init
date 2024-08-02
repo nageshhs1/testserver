@@ -1,0 +1,21 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+
+echo "set_ip_address $ppa_auto_if_cpe $lan_ip $ipv6_subnetmask"
+set_ip_address "$ppa_auto_if_cpe" "$lan_ip" "$ipv6_subnetmask"
+echo "ip -6 route add "$ipv6_lan_part_address:"/15 dev $ppa_auto_if_cpe"
+ip -6 route add "$ipv6_lan_part_address:"/15 dev $ppa_auto_if_cpe
+echo "set_routeing_table_lanside $cpe_wan_gw_l2tp $cpe_lan_ip 128 $ppa_auto_if_cpe"
+set_routeing_table_lanside "$cpe_wan_gw_l2tp" "$cpe_lan_ip" "128" "$ppa_auto_if_cpe" 
+
+

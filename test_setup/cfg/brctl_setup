@@ -1,0 +1,42 @@
+#!/bin/sh
+
+#Reset cpe brctl
+echo "Reset brctl setup"
+
+#Added below to support all UGW versions
+bridge=$(ls /proc/sys/net/ipv4/conf/ | grep "br")
+echo "bridge - $bridge"
+ifconfig $bridge down
+brctl delbr $bridge
+brctl addbr br0
+brctl addif br0 eth0_1
+brctl addif br0 eth0_2
+brctl addif br0 eth0_3
+brctl addif br0 eth0_4
+ifconfig 0.0.0.0 eth0_1
+ifconfig 0.0.0.0 eth0_2
+ifconfig 0.0.0.0 eth0_3
+ifconfig 0.0.0.0 eth0_4
+ifconfig br0 0.0.0.0 up
+ppacmd addlan -i br0
+
+#remove tunnel interface
+ppa_auto_name=$(ps -ef | grep ppacmd | awk '{print $10}')
+ppa_auto_name=$(echo $ppa_auto_name  | awk '{print $1}')
+
+interface_gre="gre$ppa_auto_name"
+echo "ip -6 tunnel del $interface_gre"
+ip -6 tunnel del $interface_gre
+echo "ip -6 link del $interface_gre"
+ip -6 link del $interface_gre
+echo "ip tunnel del $interface_gre"
+ip tunnel del $interface_gre
+echo "ip link del $interface_gre"
+ip link del $interface_gre
+interface_6rd="6rd_$ppa_auto_name"
+echo "ip tunnel del $interface_6rd"
+ip tunnel del $interface_6rd
+interface_dslite="dslite_$ppa_auto_name"
+echo "ip tunnel del $interface_dslite"
+ip tunnel del $interface_dslite
+

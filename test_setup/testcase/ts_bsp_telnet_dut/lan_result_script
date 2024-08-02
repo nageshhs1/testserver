@@ -1,0 +1,30 @@
+#!/bin/sh 
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+
+if [ ! -f $ppa_auto_packet_result_file ]; then
+	echo "why no packet rsult file:$ppa_auto_packet_result_file"
+        report_quit $ppa_auto_result_fail;
+fi
+
+#get its working session number
+#.      $ppa_auto_packet_result_file
+
+if grep "ERROR" $ppa_auto_packet_result_file 
+then
+	echo "$ppa_auto_result_fail"	
+	report_quit "$ppa_auto_result_fail"
+else
+	echo "$ppa_auto_result_ok"	
+	report_quit "$ppa_auto_result_ok"
+fi
+	

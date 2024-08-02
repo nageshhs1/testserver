@@ -1,0 +1,50 @@
+#!/bin/sh 
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+#ppa_auto_packet_result_file="log/ppa_auto_packet_result"
+
+if [ ! -f $ppa_auto_packet_result_file ]; then
+	echo "why no packet rsult file:$ppa_auto_packet_result_file"
+        report_quit $ppa_auto_result_fail;
+fi
+echo $ppa_auto_packet_result_file
+#BW=$(cat $ppa_auto_packet_result_file | grep -A1 "Report" | awk '{print $2}')
+#rate1=$(cat $ppa_auto_packet_result_file | grep -A1 "Report" | awk '{print $2$3}')
+BW=$(cat $ppa_auto_packet_result_file | awk '/Report/{getline; print $2}')
+rate1=$(cat $ppa_auto_packet_result_file | awk '/Report/{getline; print $2$3}')
+rate=$(echo "$BW * 1" | bc)
+#rate="${rate}Kbits"
+chk1="Mbits"
+chk2="Kbits"
+if [[ $rate1 == *"$chk1"* ]]; then
+	rate=$(echo "$BW * 1000" | bc)
+	echo $rate
+elif [[ $rate1 == *"$chk2"* ]]; then
+	rate=$(echo "$BW * 1" | bc)
+	echo $rate
+fi
+if [ ! -z $BW ]; then
+	echo "UDP Rate:$rate1"
+	gt=$(echo "$BW >= 1" | bc -q )
+	#if [ $gt = 1 ]; then 
+	#if [[ $rate == *"$chk_rate"* ]]; then 
+	if (( $(echo "$rate > 500" | bc -l) )); then 
+		echo "$ppa_auto_result_ok($rate1)"	
+		report_quit "$ppa_auto_result_ok($rate1)"
+	else 
+		echo "$ppa_auto_result_fail($rate1)"
+		report_quit "$ppa_auto_result_fail($rate1)"
+	fi
+else 
+	echo "$ppa_auto_result_fail"	
+	report_quit "$ppa_auto_result_fail"
+fi

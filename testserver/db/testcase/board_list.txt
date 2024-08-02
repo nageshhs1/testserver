@@ -1,0 +1,4 @@
+#board_id           model                       wan_mode    reboot_flag
+#    model is   used for sanity check only
+#Note: different WAN mode may use same board, esp for eth and atm case
+2                GRX350_GW_HE_VDSL_LTE           eth        yes

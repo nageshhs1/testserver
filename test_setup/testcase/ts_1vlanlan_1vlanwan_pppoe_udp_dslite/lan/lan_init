@@ -1,0 +1,22 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+
+set_ip_address "$ppa_auto_if_cpe.$lan_vlan_id" "$lan_ip"
+check=$( echo $cpe_wan_subnet | awk -F[..] '{print $1}')
+part1=$check
+
+cpe_wan_subnet_dslite=$part1"."$ppa_auto_name".0.0"
+
+echo "set_ipv4_routeing_table_lanside "$cpe_wan_subnet_dslite" "$cpe_lan_ip" "24""
+set_routeing_table_lanside "$cpe_wan_subnet_dslite" "$cpe_lan_ip" "24"
+

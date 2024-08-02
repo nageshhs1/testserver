@@ -1,0 +1,6 @@
+test purpose: tcp packet under nat with 2 vlan lan and 2 vlan wan
+test enviroment:
+    lan interface: br0: $cpe_lan_if. no vlan
+    wan: 2 vlan based on nas0 and nas1 , static ip. 
+    nat: nat enabled. no dscp change
+

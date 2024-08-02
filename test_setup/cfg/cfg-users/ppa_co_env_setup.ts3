@@ -1,0 +1,22 @@
+#!/bin/sh 
+
+#PVC Setting
+pvc_basic="0.33";                     export pvc_basic
+pvc_vcmux="0.33";                     export pvc_vcmux
+pvc_pppoa_llc="0.33";                 export pvc_pppoa_llc
+pvc_pppoa_vcmux="0.33";               export pvc_pppoa_vcmux
+pvc_vlan2="0.33";                     export pvc_vlan2
+pvc_vlan3="0.33";                     export pvc_vlan3
+pvc_llc_br_vlan1=$pvc_vlan2	      export pvc_llc_br_vlan1
+
+#Zyxel CO configuration Parameter List
+CO_IP=10.226.45.122             export CO_IP
+CO_USER="admin"                 export CO_USER
+CO_PASSWORD="1234"              export CO_PASSWORD
+CO_MODE="llc"                   export CO_MODE
+CO_ENCAP="llc"                export CO_ENCAP
+CO_PORT="12"                    export CO_PORT
+CO_VPI="0"                      export CO_VPI
+CO_VCI="33"                     export CO_VCI
+CO_ROUTED_IP="192.168.0.105"    export CO_ROUTED_IP
+

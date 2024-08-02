@@ -1,0 +1,177 @@
+#!/usr/bin/expect
+set ip [lindex $argv 0]
+set mode [lindex $argv 1]
+set encap [lindex $argv 2]
+set port [lindex $argv 3]
+set vpi [lindex $argv 4]
+set vci [lindex $argv 5]
+set co_log [lindex $argv 6]
+set co_ip [lindex $argv 7]
+set pvid 1
+set prio 0
+set test "$port   $vpi    $vci"
+#set co_ip $CO_ROUTED_IP
+set gw_ip 192.168.0.1
+set expect_init_spawn_id 0
+set init_spawn_id 0
+
+if {[regexp -nocase "llc" $encap]} {
+	set encap "test_llc"
+	puts $encap
+} elseif {[regexp -nocase "vcmux" $encap]} {
+	set encap "test_vc"
+	puts $encap
+} else {
+	set encap "DEFVAL"
+	puts $encap
+}
+ 
+log_file -noappend $co_log/co_telnet.log
+send_user "CO Configuration starts here on port:$port for vpi:$vpi/vci:$vci...\n"
+
+spawn telnet $ip
+expect "'^]'."
+expect "User name:"
+send "admin\n"
+expect "Password:"
+send "1234\n"
+expect ">"
+
+#Create VC Profile for adsl2+ rates
+send "adsl profile show $encap\n"
+expect {
+	"does not exist" {
+	send "adsl profile set $encap interleave 1400 29000\n"
+	expect ">"
+	}
+	"$encap" {
+	send_user "$encap Profile Already Present!!\n"
+	}
+}
+send "adsl vcprofile show $encap\n"
+expect {
+	"does not exist" {
+	send "adsl vcprofile set test_llc llc ubr 300000 0\n"
+	expect ">"
+	send "adsl vcprofile set test_vc vc ubr 300000 0\n"
+	expect ">"
+	}
+        "$encap" {
+        send_user "$encap Profile Already Present!!\n"
+        }
+}
+#send "adsl profile map $port $encap auto\n\n"
+#expect ">"
+
+#Delete all pre-configured settings in CO...
+send_user "Deleting values on port:$port for vpi:$vpi/vci:$vci...\n"
+send "adsl rpvc delete $port $vpi $vci\n"
+expect {
+        "error:" {
+        send_user "rpvc Entry Does not exist!!\n"
+        }
+        ">" {
+        send_user "rpvc Entry Deleted...\n"
+        }
+}
+send "adsl rpvc gateway delete $gw_ip\n"
+expect {
+        "error:" {
+        send_user "rpvc Entry Does not exist!!\n"
+        }
+        ">" {
+        send_user "rpvc gw entry deleted...\n"
+        }
+}
+send "adsl pvc delete $port $vpi $vci\n"
+expect {
+        "error:" {
+        send_user "PVC Entry Does not exist!!\n"
+        }
+        ">" {
+        send_user "pvc Entry Deleted...\n"
+        }
+}
+send "adsl paepvc delete $port $vpi $vci\n"
+expect {
+        "pvc does not exist" {
+        send_user "PPPoA Entry Does not exist!!\n"
+        }
+        ">" {
+        send_user "pppoa Entry Deleted...\n"
+        }
+}
+
+#Configure new values on CO...
+if {[regexp -nocase "routed_pvc" $mode]} {
+        send "adsl rpvc gateway set $gw_ip $pvid\n"
+        expect ">"
+        send "adsl rpvc gate show\n"
+        expect "$gw_ip"
+        send "adsl rpvc set $port $vpi $vci $encap $co_ip/24 $gw_ip\n\n"
+	sleep 1
+        expect ">"
+        send "adsl rpvc show $port\n"
+	sleep 1
+        expect "$gw_ip"
+        send "statistics adsl show $port\n\n"
+	sleep 1
+        expect "$port"
+        send "\n\n\n\n"
+        expect ">"
+        send_user "Routed pvc On port:$port-vpi:$vpi/vci:$vci Configured!\n"
+        send "\n"
+} elseif {[regexp -nocase "routed_gw" $mode]} {
+        send "adsl rpvc gateway set $gw_ip $pvid\n"
+        expect ">"
+        send "adsl rpvc gate show\n"
+        expect "$gw_ip"
+        expect ">"
+        send "\n"
+        send "statistics adsl show $port\n\n"
+        expect "$port"
+        send "\n\n\n\n"
+        expect ">"
+        send_user "Routed GW On port:$port-vpi:$vpi/vci:$vci Configured!\n"
+} elseif {[regexp -nocase "pppoa" $mode]} {
+        send "adsl paepvc set $port $vpi $vci $encap $pvid $prio hellotime 600\n"
+        expect ">"
+        send "adsl paepvc show\n"
+        expect "$test"
+        send "\n"
+        send "statistics adsl show $port\n\n"
+        expect "$port"
+        send "\n\n\n\n"
+        expect ">"
+        send_user "PPPOA On port:$port-vpi:$vpi/vci:$vci Configured!\n"
+} elseif {[regexp -nocase "vcmux" $mode]} {
+        send "adsl pvc set $port $vpi $vci $pvid $prio $encap\n"
+        expect ">"
+        send "adsl pvc show\n"
+        expect "$test"
+        send "\n"
+        send "statistics adsl show $port\n\n"
+        expect "$port"
+        send "\n\n\n\n"
+        expect ">"
+        send_user "VCMUX On port:$port-vpi:$vpi/vci:$vci Configured!\n"
+} elseif {[regexp -nocase "llc" $mode]} {
+        send "adsl pvc set $port $vpi $vci $pvid $prio $encap\n"
+        expect ">"
+        send "adsl pvc show\n"
+        expect "$test"
+        send "\n"
+        send "statistics adsl show $port\n\n"
+        expect "$port"
+        send "\n\n\n\n"
+        expect ">"
+        send_user "LLC On port:$port-vpi:$vpi/vci:$vci Configured!\n"
+}
+# Clear if any VLAN TAGS enabled 
+send "switch vlan set 1 *:FU\n"
+expect ">"
+send "switch vlan show 1\n"
+expect "vid"
+close $spawn_id
+log_file
+exit 0

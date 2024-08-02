@@ -1,0 +1,17 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+
+
+set_6rd_tunnel_wan_side_for_ppp "$cpe_wan_gw_6rd_ipv6" "$ipv6_subnetmask" #param 1 and 2 are ipv6 address/subnet for 6rd device
+
+set_routeing_table_wanside "$lan_ip" "$cpe_wan_ip_6rd_ipv6" "128" "$Tunnel_Dev_6rd_Name" 

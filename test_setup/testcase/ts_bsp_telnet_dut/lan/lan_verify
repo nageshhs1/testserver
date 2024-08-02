@@ -1,0 +1,20 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+
+path=lan/lan_telnet.expect
+echo "TELNET:: to $ start"
+rm $ppa_auto_packet_result_file
+expect $path $cpe_lan_ip $ppa_auto_testcase_log_folder 
+cp $ppa_auto_testcase_log_folder/telnet_log $ppa_auto_packet_result_file
+echo "TELNET:: complete"
+

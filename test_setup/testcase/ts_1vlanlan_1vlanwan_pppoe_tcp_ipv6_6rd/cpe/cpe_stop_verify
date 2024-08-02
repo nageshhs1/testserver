@@ -1,0 +1,7 @@
+. /var/cpe_env_global
+. /var/ppa_auto_env
+. /var/cpe_env
+
+killall pppd
+stop_br2684 0
+brctl delif br0 $cpe_lan_if

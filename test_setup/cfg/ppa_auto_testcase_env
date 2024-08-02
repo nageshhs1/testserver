@@ -1,0 +1,233 @@
+#!/bin/sh 
+
+#load 
+global_ppa_version_file="/tmp/version";    export global_ppa_version_file
+#This testcase env is used in lan side PC, not for CPE/WAN
+#define ppa mib tmp file
+ppa_cpe_mib_cat_file="/var/mib"; export ppa_cpe_mib_cat_file
+
+#packet generator tcp listening port
+ppa_auto_tcp_generator_port=2000; export ppa_auto_tcp_generator_port
+ppa_auto_tcp_generator_port1=2000; export ppa_auto_tcp_generator_port1
+ppa_auto_tcp_generator_port2=3000; export ppa_auto_tcp_generator_port2
+
+#ppa automation lan_result_script related enviroments
+ppa_auto_result_skip="skip"; 	      export ppa_auto_result_skip
+ppa_auto_result_fail="fail"; 	      export ppa_auto_result_fail
+ppa_auto_result_ok="ok";              export ppa_auto_result_ok
+ppa_auto_result_lan_ok="lan ok only"; export ppa_auto_result_lan_ok
+ppa_auto_result_wan_ok="wan ok only"; export ppa_auto_result_wan_ok
+ppa_auto_result_one_wan_only_ok="one wan ok only"; export ppa_auto_result_one_wan_only_ok
+ppa_auto_result_unknown="unknown";    export ppa_auto_result_wan_ok
+ppa_auto_mininal_pkt=10;              export ppa_auto_mininal_pkt
+ppa_auto_mininal_pkt_mc=10;           export ppa_auto_mininal_pkt_mc
+
+#mib file Get_Mib_Value input parameters
+
+ipv6_tcp="6_tcp_pkts"     export ipv6_tcp
+ipv6_udp="6_udp_pkts"     export ipv6_udp
+ipv4_tcp="4_tcp_pkts"     export ipv4_tcp
+ipv4_udp="4_udp_pkts"     export ipv4_udp
+ipv4_mc="4_mc_pkts"       export ipv4_mc
+ipv6_mc="6_mc_pkts"       export ipv6_mc
+brg="brg_pkts"            export brg
+
+#ppa_testcase tmp log folder#	
+#don't change it since it should match with ppa_auto_manager.
+#in ppa_auto_manager, it is hardcoded. 
+
+ppa_auto_testcase_log_folder="log";  export ppa_auto_testcase_log_folder
+ppa_auto_testcase_result_file=$ppa_auto_testcase_log_folder"/result.log";  
+export ppa_auto_testcase_result_file
+
+#tcp/udp packet generator should save result in this fail. 
+#Normally the value should be the successfully created and working connection number
+ppa_auto_packet_result_file=$ppa_auto_testcase_log_folder"/packet.log"
+export ppa_auto_packet_result_file
+
+ppa_auto_packet_id_file=$ppa_auto_testcase_log_folder"/ppa_auto_packet_id"
+export ppa_auto_packet_id_file
+
+ppa_auto_packet_result_file=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result"
+export ppa_auto_packet_result_file
+
+ppa_auto_packet_id_file1=$ppa_auto_testcase_log_folder"/ppa_auto_packet_id1"
+export ppa_auto_packet_id_file1
+
+ppa_auto_packet_result_file1=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result1"
+export ppa_auto_packet_result_file1
+ppa_auto_packet_result_file2=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result2"
+export ppa_auto_packet_result_file2
+ppa_auto_packet_result_file3=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result3"
+export ppa_auto_packet_result_file3
+ppa_auto_packet_result_file4=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result4"
+export ppa_auto_packet_result_file4
+ppa_auto_packet_result_file5=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result5"
+export ppa_auto_packet_result_file5
+ppa_auto_packet_result_file6=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result6"
+export ppa_auto_packet_result_file6
+ppa_auto_packet_result_file7=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result7"
+export ppa_auto_packet_result_file7
+ppa_auto_packet_result_file8=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result8"
+export ppa_auto_packet_result_file8
+ppa_auto_packet_result_file9=$ppa_auto_testcase_log_folder"/ppa_auto_packet_result9"
+export ppa_auto_packet_result_file9
+
+ppa_auto_tmp_result_log="tmp_start.htm"; export ppa_auto_tmp_result_log
+	
+ppa_auto_local_mib_file="/tmp/mib"
+export ppa_auto_local_mib
+
+#pattern time and its result file
+ppa_auto_pattern_seconds=10;                                              export ppa_auto_patter_seconds
+ppa_auto_pattern_cfg_lan=$ppa_auto_testcase_log_folder"/pattern_lan.conf"; export ppa_auto_pattern_cfg_lan
+ppa_auto_pattern_cfg_wan=$ppa_auto_testcase_log_folder"/pattern_wan.conf"; export ppa_auto_pattern_cfg_wan
+ppa_auto_pattern_res_lan=$ppa_auto_testcase_log_folder"/pattern_lan.log";  export ppa_auto_pattern_res_lan
+ppa_auto_pattern_res_wan=$ppa_auto_testcase_log_folder"/pattern_wan.log";  export ppa_auto_pattern_res_wan
+
+
+#Just for logic
+FILE=$ppa_auto_local_mib_file
+set=1
+unset=0
+colum_field=""
+row_field=""
+colum=0
+
+
+#
+#
+ppa_auto_tool_path="../../bin/ppa_auto_tool"; export ppa_auto_tool_path
+ppa_auto_tool="ppa_auto_tool_wrapper"; export ppa_auto_tool
+ppa_auto_pattern=../../bin/ppa_auto_pattern;  export ppa_auto_pattern
+tcp_client=../../bin/tcp_client;              export tcp_client
+tcp_client6=../../bin/tcp_client6;              export tcp_client6
+ppa_auto_manager=../ppa_auto_manager;         export ppa_auto_manager
+ppa_auto_tool_retcode_file="log/tool_retcode"      export ppa_auto_tool_retcode_file
+serialport_rw=upload_file			export serialport_rw
+#
+report_quit( )
+{  #s1: the result: ok/fail/skip   
+   echo $1 > $ppa_auto_testcase_result_file   
+   exit 0;
+}
+
+report( )
+{  #s1: the result: ok/fail/skip   
+   echo $1 > $ppa_auto_testcase_result_file   
+}
+	
+find_colum_row()
+{
+	line="$@"
+	counter_colum=0;
+
+	if [ $colum -eq $set ];then
+		while [ $colum -eq $set ] 
+		do 
+			counter_colum=`expr $counter_colum + 1`;
+			colum_field=$(echo $line | awk '{ print $'$counter_colum' }')
+			colum_check=$(echo $colum_field | grep -i "$Arg_1")
+			if [ "$colum_check" != "" ];then
+				colum=$unset;
+			fi
+			counter=`expr $counter + 1`;
+		done
+	else
+		row_found=$(echo $line | grep "$Arg_2")
+		if [ "$row_found" != "" ];then						
+			row_field=$(echo $row_found | awk '{ print $1 }')
+			mib_Value=$(echo $row_found | awk '{ print $'$counter' }' | sed -e "s/\,//g")
+			ppa_fast_pkt=$mib_Value		
+		fi
+	fi
+}
+
+
+Get_Mib_Value()
+{
+	
+	if [ "$1" != "" ] && [ "$2" != ""  ];then 
+		counter=0;
+		field=$(echo $1 | cut -c -3)
+		if [ "$field" != "ptm" ] &&  [ "$field" != "nas" ];then
+			ppa_echo "Interfacel $field found"			
+			Arg_1=$1;
+			ppa_echo "get mib value from $Arg_1 colum"
+		else
+			ppa_echo "Interface $field found"			
+			Arg_1="DSL";
+			ppa_echo "get mib value from $Arg_1 colum"
+		fi
+		Arg_2=$2;
+
+		if [ ! -f $FILE ]; then
+			echo "$FILE : does not exists"
+			return
+		elif [ ! -r $FILE ]; then
+			echo "$FILE: can not read"
+			return
+		fi
+
+		# read $FILE using the file descriptors
+		# Set loop separator to end of line
+		BAKIFS=$IFS
+		IFS=$(echo -en "\n\b")
+		exec 3<&0
+		exec 0<"$FILE"
+		colum=$set;
+		while read -r line
+		do
+			find_colum_row $line
+		done
+		exec 0<&3
+	 	# restore $IFS which was used to determine what the field separators are
+		IFS=$BAKIFS
+		ppa_echo "Sucessfully returning to the called function ..."
+		return
+	else
+		ppa_echo "unSucessfully returning to the called function ..."
+		return
+	fi	
+}
+
+
+Get_TC_Mib_Value()
+{
+	if [ ! -f $FILE ]; then
+		echo "$FILE : does not exists"
+		return
+	elif [ ! -r $FILE ]; then
+		echo "$FILE: can not read"
+		return
+	fi
+	mib_Value=0
+	# read $FILE using the file descriptors
+	# Set loop separator to end of line
+	BAKIFS=$IFS
+	exec 3<&0
+	exec 0<"$FILE"
+	colum=$set;
+	while read -r line
+	do
+		accelrated_packet_str=$(echo $line | grep "acc_pkt")
+		if [ "$accelrated_packet_str" != "" ];then	
+			str=$(echo $line | awk '{ print $1 }')
+			if [ "$str" != "non_acc_pkt" ];then
+				string=$(echo $accelrated_packet_str | cut -d'=' -f2)
+				for val in $string
+				do
+					if [ ! -z "${val##*[!0-9]*}" ];then
+						mib_Value=`expr $mib_Value + $val`
+					fi			
+				done
+			fi
+		fi
+	done
+	exec 0<&3
+	 # restore $IFS which was used to determine what the field separators are
+	IFS=$BAKIFS
+	ppa_fast_pkt=$mib_Value
+	return
+}
+

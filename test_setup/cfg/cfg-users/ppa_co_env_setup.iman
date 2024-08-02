@@ -1,0 +1,11 @@
+#!/bin/sh 
+
+#PVC Setting
+pvc_basic="0.33";                     export pvc_basic
+pvc_vcmux="0.33";                     export pvc_vcmux
+pvc_pppoa_llc="0.33";                 export pvc_pppoa_llc
+pvc_pppoa_vcmux="0.33";               export pvc_pppoa_vcmux
+pvc_vlan2="0.33";                     export pvc_vlan2
+pvc_vlan3="0.33";                     export pvc_vlan3
+pvc_llc_br_vlan1=$pvc_vlan2	      export pvc_llc_br_vlan1
+

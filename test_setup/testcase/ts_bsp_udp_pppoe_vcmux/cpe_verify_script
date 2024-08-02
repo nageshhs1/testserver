@@ -1,0 +1,19 @@
+#!/bin/sh 
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+download_file "cpe/cpe_verify" "/var/t.sh"
+$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c run -s /var/t.sh                  -g $ppa_auto_debug
+
+$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s "/var/cpe_mode"  -d "$ppa_auto_testcase_log_folder/cpe_mode" -g $ppa_auto_debug
+$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s "/var/cpe_wan_info"  -d "$ppa_auto_testcase_log_folder/cpe_wan_info" -g $ppa_auto_debug
+$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c get -s "/var/cpe_pvc_mib"  -d "$ppa_auto_testcase_log_folder/cpe_pvc_mib" -g $ppa_auto_debug
+

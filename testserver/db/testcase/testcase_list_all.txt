@@ -1,0 +1,7 @@
+ts_bsp_tcp
+ts_bsp_telnet
+ts_bsp_udp
+ts_lan_wan_static_udp
+ts_lan_wan_pppoe_tcp
+ts_lan_wan_static_tcp_ipv6
+ts_lan_wan_pppoe_udp_ipv6

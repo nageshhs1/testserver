@@ -1,0 +1,77 @@
+#!/bin/sh
+
+#define pvc and calcuate nas_index, also change $phy_wan_ifname0 value since default it is nas0 in ATM wan mode.
+pvc=$pvc_basic;  export pvc
+nas_index=$(get_nas_index $pvc); export nas_index
+phy_wan_ifname0=$(rework_wan_ifname "$phy_wan_ifname0" "$nas_index");
+ppa_echo phy_wan_ifname0=$phy_wan_ifname0
+
+#define lan/wan interfaces:
+cpe_lan_base_if=$phy_lan_ifname0;    		 export cpe_lan_base_if
+cpe_lan_if=$cpe_lan_base_if;    		 export cpe_lan_if
+cpe_wan_base_if=$phy_wan_ifname0;   export cpe_wan_base_if
+cpe_wan_if="ppp0";        export cpe_wan_if
+cpe_nat_enable=1;         export cpe_nat_enable
+#--------------------------------Define CPE LAN/WAN IP and LAN PC IP--------------------------------Begin
+
+#define cpe lan subnet    *************** Need change it according to different test case
+cpe_lan_subnet=$lan_subnet_basic
+export cpe_lan_subnet
+
+#define cpe lan netmask
+cpe_lan_netmask=$lan_subnet_basic_mask
+export cpe_lan_netmask
+
+#--------------------------------Define CPE WAN IP--------------------------------Begin
+#define cpe wan subnet  ************** Need change it according to different test case
+cpe_wan_subnet=$wan_subnet_basic
+export cpe_wan_subnet
+
+cpe_wan_netmask=$wan_subnet_basic_mask
+export cpe_wan_netmask
+
+#define multicast_ip   ************** Need change it according to different test case
+multicast_ip=$wan_subnet_basic_mc
+export multicast_ip
+
+
+#create cpe lan interface ip according to its subnet and ppa automation session name
+get_cpe_lan_ip $cpe_lan_subnet
+cpe_lan_ip=$tmp_cpe_lan_ip
+export cpe_lan_ip
+
+#create lan pc ip according to its subnet and ppa automation session name
+get_lan_ip_route_mode $cpe_lan_subnet
+lan_ip=$tmp_lan_ip_route_mode
+export lan_ip
+
+#create 2 [one for tunnelling device and another for CPE wan interface ]cpe wan interface ip according to its subnet and ppa automation session name
+
+get_cpe_wan_ip $wan_subnet_dslite_ipv6_part_address
+cpe_wan_ip_ipv6=$tmp_cpe_wan_ip
+export cpe_wan_ip_ipv6
+get_cpe_wan_ip $wan_subnet_dslite_ipv4_part_address
+cpe_wan_ip_ipv4_dslite=$tmp_cpe_wan_ip
+export cpe_wan_ip_ipv4_dslite
+
+#create cpe wan interface. Always set first ip for gw according to its subnet
+get_cpe_gw_ip $wan_subnet_dslite_ipv6_part_address
+cpe_wan_gw_ipv6=$tmp_cpe_gw_ip
+export cpe_wan_gw_ipv6
+get_cpe_gw_ip $wan_subnet_dslite_ipv4_part_address
+cpe_wan_gw_ipv4_dslite=$tmp_cpe_gw_ip
+export cpe_wan_gw_ipv4_dslite 
+
+if [ $enable_ips_debug -eq 1 ]; then
+    echo "cpe_lan_subnet=$cpe_lan_subnet"
+    echo "cpe_lan_netmask=$cpe_lan_netmask"
+    echo "cpe_lan_ip=$cpe_lan_ip"
+    echo "lan_ip=$lan_ip"
+
+    echo "cpe_wan_subnet=$cpe_wan_subnet"
+    echo "cpe_wan_ip=$cpe_wan_ip"
+    echo "cpe_wan_gw=$cpe_wan_gw"
+
+    echo "multicast_ip=$multicast_ip"
+fi
+

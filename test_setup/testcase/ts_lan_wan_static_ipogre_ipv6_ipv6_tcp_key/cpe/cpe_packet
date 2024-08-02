@@ -1,0 +1,35 @@
+#!/bin/sh 
+
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if $phy_wan_ifname0
+. /var/ppa_auto_env
+. /var/cpe_env
+
+if [ $cpe_nat_enable -gt 0 ]; then 
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if -j MASQUERADE
+fi
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal  
+
+
+echo "set_ipv6_address $cpe_wan_if $cpe_wan_ip $ipv6_subnetmask"
+set_ip_address "$cpe_wan_if" "$cpe_wan_ip" "$ipv6_subnetmask"
+echo "set_ipv6_mac_neigh_table_cpeside "$phy_wan_ifname0" "$cpe_wan_gw" "$mac_address""
+set_ipv6_mac_neigh_table_cpeside "$phy_wan_ifname0" "$cpe_wan_gw" "$mac_address"
+gre="gre${ppa_auto_name}"
+echo "ip -6 tunnel add $gre mode ip6gre key 1 remote $cpe_wan_gw local $cpe_wan_ip ttl 255"
+ip -6 tunnel add $gre mode ip6gre key 1 remote $cpe_wan_gw local $cpe_wan_ip ttl 255
+echo "ip -6 link set $gre up"
+ip -6 link set $gre up
+echo "set_ipv6_address $gre $cpe_wan_ip_gre $ipv6_subnetmask"
+set_ip_address "$gre" "$cpe_wan_ip_gre" "$ipv6_subnetmask"
+echo "ip -6 route add $lan_subnet_basic_ipv6_part_address\"0\"/$ipv6_subnetmask dev br0"
+ip route add $lan_subnet_basic_ipv6_part_address"0"/$ipv6_subnetmask dev br0
+echo "ip -6 route add $wan_subnet_gre_ipv6_part_address\"0\"/$ipv6_subnetmask dev $gre"
+ip route add $wan_subnet_gre_ipv6_part_address"0"/$ipv6_subnetmask dev $gre
+echo "ip -6 route add $cpe_wan_subnet\"0\"/$ipv6_subnetmask dev $gre"
+ip -6 route add $cpe_wan_subnet"0"/$ipv6_subnetmask dev $gre
+

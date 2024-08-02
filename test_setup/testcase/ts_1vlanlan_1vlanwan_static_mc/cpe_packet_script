@@ -1,0 +1,22 @@
+#!/bin/sh
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+
+download_file "cpe/cpe_packet" "/var/t.sh"
+#$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c put -s cpe/cpe_packet -d /var/t.sh  -g $ppa_auto_debug
+#ppa_sleep  1
+
+$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c run -s /var/t.sh                    -g $ppa_auto_debug
+#Need wait some time to let cpe ready, like bridge enter learning mode and so on.
+#Need wait some time to let cpe ready, like bridge enter learning mode and so on.
+ppa_ping  20 $cpe_wan_gw
+#ppa_sleep  20

@@ -1,0 +1,130 @@
+RX Queue Config (0x00004C00):
+	0: MPoA type - EoA w/o FCS, MPoA mode - LLC, IP version 4		Oversize - 2016, Undersize - 0, Max Frame size - 2016
+		uu mask - 0xFF, cpi mask - 0xFF
+		uu exp - 0x00, cpi exp - 0x00
+	1: MPoA type - EoA w/o FCS, MPoA mode - LLC, IP version 4		Oversize - 2016, Undersize - 0, Max Frame size - 2016
+		uu mask - 0xFF, cpi mask - 0xFF
+		uu exp - 0x00, cpi exp - 0x00
+	2: MPoA type - EoA w/o FCS, MPoA mode - LLC, IP version 4		Oversize - 2016, Undersize - 0, Max Frame size - 2016
+		uu mask - 0xFF, cpi mask - 0xFF
+		uu exp - 0x00, cpi exp - 0x00
+	3: MPoA type - EoA w/o FCS, MPoA mode - LLC, IP version 4		Oversize - 2016, Undersize - 0, Max Frame size - 2016
+		uu mask - 0xFF, cpi mask - 0xFF
+		uu exp - 0x00, cpi exp - 0x00
+	4: MPoA type - EoA w/o FCS, MPoA mode - LLC, IP version 4		Oversize - 2016, Undersize - 0, Max Frame size - 2016
+		uu mask - 0xFF, cpi mask - 0xFF
+		uu exp - 0x00, cpi exp - 0x00
+	5: MPoA type - EoA w/o FCS, MPoA mode - LLC, IP version 4		Oversize - 2016, Undersize - 0, Max Frame size - 2016
+		uu mask - 0xFF, cpi mask - 0xFF
+		uu exp - 0x00, cpi exp - 0x00
+	6: MPoA type - EoA w/o FCS, MPoA mode - LLC, IP version 4		Oversize - 2016, Undersize - 0, Max Frame size - 2016
+		uu mask - 0xFF, cpi mask - 0xFF
+		uu exp - 0x00, cpi exp - 0x00
+	7: MPoA type - EoA w/o FCS, MPoA mode - LLC, IP version 4		Oversize - 2016, Undersize - 0, Max Frame size - 2016
+		uu mask - 0xFF, cpi mask - 0xFF
+		uu exp - 0x00, cpi exp - 0x00
+	8: MPoA type - EoA w/o FCS, MPoA mode - VC mux, IP version 4		Oversize - 0, Undersize - 0, Max Frame size - 0
+		uu mask - 0x00, cpi mask - 0x00
+		uu exp - 0x00, cpi exp - 0x00
+	9: MPoA type - EoA w/o FCS, MPoA mode - VC mux, IP version 4		Oversize - 0, Undersize - 0, Max Frame size - 0
+		uu mask - 0x00, cpi mask - 0x00
+		uu exp - 0x00, cpi exp - 0x00
+	10: MPoA type - EoA w/o FCS, MPoA mode - VC mux, IP version 4		Oversize - 0, Undersize - 0, Max Frame size - 0
+		uu mask - 0x00, cpi mask - 0x00
+		uu exp - 0x00, cpi exp - 0x00
+	11: MPoA type - EoA w/o FCS, MPoA mode - VC mux, IP version 4		Oversize - 0, Undersize - 0, Max Frame size - 0
+		uu mask - 0x00, cpi mask - 0x00
+		uu exp - 0x00, cpi exp - 0x00
+	12: MPoA type - EoA w/o FCS, MPoA mode - VC mux, IP version 4		Oversize - 0, Undersize - 0, Max Frame size - 0
+		uu mask - 0x00, cpi mask - 0x00
+		uu exp - 0x00, cpi exp - 0x00
+	13: MPoA type - EoA w/o FCS, MPoA mode - VC mux, IP version 4		Oversize - 0, Undersize - 0, Max Frame size - 0
+		uu mask - 0x00, cpi mask - 0x00
+		uu exp - 0x00, cpi exp - 0x00
+	14: MPoA type - EoA w/o FCS, MPoA mode - VC mux, IP version 4		Oversize - 0, Undersize - 0, Max Frame size - 0
+		uu mask - 0x00, cpi mask - 0x00
+		uu exp - 0x00, cpi exp - 0x00
+	15: MPoA type - EoA w/o FCS, MPoA mode - VC mux, IP version 4		Oversize - 0, Undersize - 0, Max Frame size - 0
+		uu mask - 0x00, cpi mask - 0x00
+		uu exp - 0x00, cpi exp - 0x00
+TX Queue Config (0x00003A00):
+	0: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 1
+		MPoA mode - LLC
+		ATM header - 0x00000210
+	1: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 2
+		MPoA mode - LLC
+		ATM header - 0x00000220
+	2: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 3
+		MPoA mode - LLC
+		ATM header - 0x00000230
+	3: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 4
+		MPoA mode - LLC
+		ATM header - 0x00000240
+	4: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 5
+		MPoA mode - LLC
+		ATM header - 0x00000250
+	5: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 6
+		MPoA mode - LLC
+		ATM header - 0x00000260
+	6: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 7
+		MPoA mode - LLC
+		ATM header - 0x00000270
+	7: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 8
+		MPoA mode - LLC
+		ATM header - 0x00000280
+	8: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 0
+		MPoA mode - VC mux
+		ATM header - 0x00000000
+	9: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 0
+		MPoA mode - VC mux
+		ATM header - 0x00000000
+	10: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 0
+		MPoA mode - VC mux
+		ATM header - 0x00000000
+	11: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 0
+		MPoA mode - VC mux
+		ATM header - 0x00000000
+	12: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 0
+		MPoA mode - VC mux
+		ATM header - 0x00000000
+	13: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 0
+		MPoA mode - VC mux
+		ATM header - 0x00000000
+	14: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 0
+		MPoA mode - VC mux
+		ATM header - 0x00000000
+	15: uu - 0x00, cpi - 0x00
+		same VC queue map - null
+		bearer channel - 0, QSB ID - 0
+		MPoA mode - VC mux
+		ATM header - 0x00000000

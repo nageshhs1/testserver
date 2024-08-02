@@ -1,0 +1,4 @@
+packet_conn_tcp=1
+export packet_conn_tcp
+packet_conn_udp=0
+export packet_udp

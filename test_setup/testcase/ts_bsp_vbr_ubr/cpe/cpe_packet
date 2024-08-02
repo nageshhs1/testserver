@@ -1,0 +1,26 @@
+#!/bin/sh
+
+. /var/cpe_env_global
+#bridge with single wan itnerface and single outvlan. LAN no vlan
+#br0: $cpe_lan_if 
+. /var/ppa_auto_env
+. /var/cpe_env
+
+if [ $cpe_nat_enable -gt 0 ]; then 
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if0 -j MASQUERADE
+    iptables -t nat -A POSTROUTING -o $cpe_wan_if1 -j MASQUERADE
+fi
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal  
+
+
+echo "set_ipv4_address "$cpe_wan_if0" "$cpe_wan_ip1""
+#echo "set_ipv4_address "$cpe_wan_if1" "$cpe_wan_ip2""
+set_ip_address "$cpe_wan_if0" "$cpe_wan_ip1"
+set_ip_address "$cpe_wan_if1" "$cpe_wan_ip2"
+#set_default_gw "$cpe_wan_gw"
+#ppa_ping 20 $lan_ip1
+#ppa_ping 20 $lan_ip2
+#ppa_ping 20 $cpe_wan_gw1
+#ppa_ping 20 $cpe_wan_gw2

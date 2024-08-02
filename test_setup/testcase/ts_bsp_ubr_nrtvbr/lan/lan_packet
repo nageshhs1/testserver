@@ -1,0 +1,25 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+# Change pvc traffic send traffic for 20s. and sleep 60 added to both report files to reflect the data correctly.
+# Please dont chnage the timings. 
+sec=20
+iperf -c "$cpe_wan_gw1" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result1 &
+iperf -c "$cpe_wan_gw2" -i 1 -t $sec >  $ppa_auto_testcase_log_folder/result2 &
+sleep 60
+#cat $ppa_auto_testcase_log_folder/result | grep sec | head -$sec | tail -1 | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file
+
+cat $ppa_auto_testcase_log_folder/result1 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file1
+cat $ppa_auto_testcase_log_folder/result1 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' 
+cat $ppa_auto_testcase_log_folder/result2 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}' > $ppa_auto_packet_result_file2
+
+cat $ppa_auto_testcase_log_folder/result2 | awk 'END{print}' | tr - " " | awk '{print $4,$8,$9}'

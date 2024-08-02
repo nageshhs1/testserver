@@ -1,0 +1,19 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+
+#set_routeing_table_wanside "$lan_ip" "$cpe_wan_ip" "24"
+cmd="sudo ip route del "$lan_ip""
+echo "$cmd"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -g $ppa_auto_debug
+cmd="sudo ip route add "$lan_ip/32" dev ppp0"
+echo "$cmd"
+$ppa_auto_tool -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd" -g $ppa_auto_debug

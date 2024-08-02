@@ -1,0 +1,28 @@
+#!/bin/sh 
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+#ppa_ping 20 $cpe_lan_ip
+#ppa_ping 20 $cpe_wan_ip
+#ppa_ping 20 $cpe_wan_gw
+ppa_echo cpe_wan_gw1="$cpe_wan_gw1"
+ppa_echo cpe_wan_gw2="$cpe_wan_gw2"
+ppa_echo cpe_wan_gw3="$cpe_wan_gw3"
+ppa_echo cpe_wan_gw4="$cpe_wan_gw4"
+ppa_echo cpe_wan_gw4="$cpe_wan_gw5"
+ppa_echo cpe_wan_gw4="$cpe_wan_gw6"
+ppa_echo cpe_wan_gw4="$cpe_wan_gw7"
+ppa_echo cpe_wan_gw4="$cpe_wan_gw8"
+ppa_echo ppa_auto_tcp_generator_port="$ppa_auto_tcp_generator_port"
+ppa_echo ppa_auto_packet_id_file="$ppa_auto_packet_id_file"
+ppa_echo ppa_auto_packet_result_file="$ppa_auto_packet_result_file"
+
+lan/lan_packet

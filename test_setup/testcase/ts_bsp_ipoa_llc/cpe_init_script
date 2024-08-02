@@ -1,0 +1,28 @@
+#!/bin/sh
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+. ../../cfg/ppa_co_env_setup
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+../../bin/Cpe_Reset_Script.sh
+
+tmp_folder="/tftpboot/"
+
+#Run CO config Script
+path=co_telnet.expect
+echo "TELNET:: to CO:$CO_IP start"
+echo "expect $path $CO_IP routed_pvc llc $CO_PORT $CO_VPI $CO_VCI $tmp_folder $CO_ROUTED_IP"
+sudo expect $path $CO_IP routed_pvc llc $CO_PORT $CO_VPI $CO_VCI $tmp_folder $CO_ROUTED_IP
+#sudo cp $ppa_auto_testcase_log_folder/co_telnet_log $ppa_auto_packet_result_file
+echo "TELNET:: to CO:$CO_IP complete"
+
+#upload script & run it
+download_file "cpe/cpe_init" "/var/t.sh"
+$ppa_auto_tool -i $ppa_auto_if_cpe -n $ppa_auto_name -t cpe -c run -s /var/t.sh                  -g $ppa_auto_debug

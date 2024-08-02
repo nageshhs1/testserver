@@ -1,0 +1,17 @@
+#!/bin/sh 
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+
+#delete lan PC routing
+cmd="sudo killall mc_sender6"
+${ppa_auto_tool_path} -i $ppa_auto_if_wan -n $ppa_auto_name -t wan -c cmd -s "$cmd"
+#ppa_sleep 20
+

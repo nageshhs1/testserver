@@ -1,0 +1,16 @@
+#!/bin/sh 
+#load global env 
+
+. ../../cfg/cpe_env_global
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. wan/wan_env
+. lan/lan_env
+echo "set_tunnel_dslite_wan "$Tunnel_Dev_dslite_Name" "$cpe_wan_gw_ipv6" "$cpe_wan_ip_ipv6" "$cpe_wan_gw_ipv4_dslite" "24""
+set_tunnel_dslite_wan "$Tunnel_Dev_dslite_Name" "$cpe_wan_gw_ipv6" "$cpe_wan_ip_ipv6" "$cpe_wan_gw_ipv4_dslite" "24"
+
+#set_ipv4_routeing_table_wanside "$cpe_lan_subnet" "$cpe_wan_ip_ipv4_dslite" "24"
+set_routeing_table_wanside "$lan_ip" "$cpe_wan_ip_ipv4_dslite" "24"

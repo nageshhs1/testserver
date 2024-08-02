@@ -1,0 +1,17 @@
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+#echo cpe_wan_gw="$cpe_wan_gw"
+#echo ppa_auto_tcp_generator_port="$ppa_auto_tcp_generator_port"
+#echo ppa_auto_packet_id_file="$ppa_auto_packet_id_file"
+#echo ppa_auto_packet_result_file="$ppa_auto_packet_result_file"
+
+#$ppa_auto_pattern -i $ppa_auto_if_cpe -c $ppa_auto_pattern_cfg_lan -r $ppa_auto_pattern_res_lan -t $ppa_auto_pattern_seconds -g ppa_auto_pattern_debug
+

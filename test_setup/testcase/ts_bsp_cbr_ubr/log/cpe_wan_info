@@ -1,0 +1,10 @@
+Power Saving: Enable
+PVC List:
+PVC MAP: 0xc3
+TX Queue Map: 0xc3
+[0]: VPI: 0, VCI: 33, dev: nas0, MPoA type: 0, MPoA mode: 1, Subif_id: 0x0, Tx Queue Table: 0x1
+[1]: VPI: 0, VCI: 34, dev: nas1, MPoA type: 0, MPoA mode: 1, Subif_id: 0x100, Tx Queue Table: 0x2
+[6]: VPI: 0, VCI: 39, dev: nas6, MPoA type: 0, MPoA mode: 1, Subif_id: 0x600, Tx Queue Table: 0x40
+[7]: VPI: 0, VCI: 40, dev: nas7, MPoA type: 0, MPoA mode: 1, Subif_id: 0x700, Tx Queue Table: 0x80
+SYS CLK: 288MHZ
+PPE CLK: 432MHZ

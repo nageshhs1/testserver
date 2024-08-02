@@ -1,0 +1,75 @@
+#!/bin/sh
+
+. ../../cfg/cpe_env_global
+#load global env 
+. ../../cfg/ppa_auto_env
+. ../../cfg/ppa_auto_testcase_env
+
+#load local env
+. cpe/cpe_env
+. lan/lan_env
+. wan/wan_env
+
+
+if [ ! -f $ppa_auto_packet_result_file ]; then
+	echo "why no packet rsult file:$ppa_auto_packet_result_file"
+        report_quit $ppa_auto_result_fail;
+fi
+
+#get its working session number
+.      $ppa_auto_packet_result_file
+
+#echo "packet_conn_tcp=$packet_conn_tcp"
+
+if [ ! -f $ppa_auto_local_mib_file ]; then 
+	echo "why no mib file: $ppa_auto_local_mib_file"
+        report_quit $ppa_auto_result_unknown
+fi
+
+
+#get_lan_wan_fast_udp 1
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_udp 0
+#echo $ppa_fast_pkt	
+#get_lan_wan_fast_tcp 1
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_tcp 0
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_mc 1
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_mc 0
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_br 1
+#echo $ppa_fast_pkt
+#get_lan_wan_fast_br 0
+#echo $ppa_fast_pkt
+#exit 0
+
+#		Get_Mib_Value $phy_lan_ifname0 $ipv4_udp
+#		lan_fast_pkt=$ppa_fast_pkt				
+
+#		Get_Mib_Value $phy_wan_ifname0 $ipv4_udp 
+#		wan_fast_pkt=$ppa_fast_pkt
+
+
+Get_TC_Mib_Value
+lan_fast_pkt=$ppa_fast_pkt				
+wan_fast_pkt=$ppa_fast_pkt
+
+if [ $lan_fast_pkt -gt $ppa_auto_mininal_pkt ]; then
+	if [ $wan_fast_pkt -gt $ppa_auto_mininal_pkt ]; then
+		echo "$ppa_auto_result_ok [mib_value = $ppa_fast_pkt] "	
+		report_quit "$ppa_auto_result_ok"
+	else
+		echo "$ppa_auto_result_lan_ok [mib_value = $ppa_fast_pkt] "     
+                report_quit "$ppa_auto_result_lan_ok"
+	fi
+else
+	if [ $wan_fast_pkt -gt $ppa_auto_mininal_pkt ]; then
+                echo "$ppa_auto_result_wan_ok [mib_value = $ppa_fast_pkt] "     
+                report_quit "$ppa_auto_result_wan_ok"
+        else
+                echo "$ppa_auto_result_fail [mib_value = $ppa_fast_pkt] "  
+                report_quit $ppa_auto_result_fail
+        fi
+fi
